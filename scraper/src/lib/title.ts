@@ -1,9 +1,22 @@
 import openai from './openai';
 import config from '../config/openai.config';
+interface TitleGeneratorProps {
+  articleTitle: string;
+  articleUnderTitle?: string;
+  articleContent: string;
+  language: string;
+}
 export const titleGenerator = async (
-  articleTitle: string,
-  articleContent: string,
-  language: string,
+  // articleTitle: string,
+  // articleUnderTitle?: string,
+  // articleContent: string,
+  // language: string,
+  {
+    articleTitle,
+    articleUnderTitle,
+    articleContent,
+    language,
+  }: TitleGeneratorProps,
 ) => {
   let chat = new openai.Chat({
     apiKey: config.OPENAI_API_KEY,
@@ -16,9 +29,13 @@ Your should only reply with the new title. Do not inclue any comments or other t
 `,
     role: 'system',
   });
+
+  let prompt = `Article title: ${articleTitle}\n`;
+  if (articleUnderTitle)
+    prompt += `Article under title: ${articleUnderTitle}\n`;
+  prompt += `Article content: ${articleContent}\n`;
   chat.addMessage({
-    content: `Article title: ${articleTitle}
-Article content: ${articleContent}`,
+    content: prompt,
     role: 'user',
   });
   console.log(chat.messages[1]);

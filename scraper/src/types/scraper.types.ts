@@ -6,6 +6,7 @@ export interface Article {
   id: string;
   content: string;
   date: Date;
+  underTitle?: string;
 }
 
 export type Scrape = (queue?: ScraperQueue[]) => Promise<Article[]>;
@@ -22,4 +23,5 @@ export type ScrapeConfig = {
 export type ScrapeFile = {
   default: Scrape;
   config: ScrapeConfig;
+  enabled?: boolean;
 };

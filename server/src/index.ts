@@ -1,6 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
+import { Article, PrismaClient } from '@prisma/client';
 const app = express();
 
 const rootGetSchema = z.object({
@@ -9,7 +9,9 @@ const rootGetSchema = z.object({
   url: z.string(),
 });
 const Prisma = new PrismaClient();
-
+export type rootGetResponse = {
+  article: Article;
+};
 app.get('/', async (req, res) => {
   console.log('GET /');
   const { website, id, url } = rootGetSchema.parse(req.query);
@@ -22,8 +24,9 @@ app.get('/', async (req, res) => {
   console.log(website, id);
   let found = await Prisma.article.findFirst({
     where: {
-      website: website.toLowerCase(),
-      articleId: id,
+      // website: website.toLowerCase(),
+      // articleId: id,
+      url: url,
     },
   });
   console.log(found);
@@ -51,8 +54,10 @@ app.get('/', async (req, res) => {
       code: 'article_not_found',
     });
   }
-  console.log(found.aiGeneratedTitle);
-  return res.status(200).send(found.aiGeneratedTitle);
+  console.log(found);
+  return res.status(200).send({
+    article: found,
+  });
 });
 
 app.use(
@@ -76,6 +81,7 @@ app.use(
     }
   },
 );
+
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });

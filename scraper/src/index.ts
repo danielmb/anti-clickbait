@@ -9,18 +9,27 @@ const scrapers = fs.readdirSync(scrapersPath);
 const Prisma = new PrismaClient();
 const main = async () => {
   for (const scraper of scrapers) {
-    const { default: scrape, config }: ScrapeFile = await import(
-      `./scrapers/${scraper}`
-    );
+    const {
+      default: scrape,
+      config,
+      enabled,
+    }: ScrapeFile = await import(`./scrapers/${scraper}`);
     if (typeof scrape !== 'function') {
-      throw new Error(
-        `Scraper ${scraper} does not export a function, found ${typeof scrape}`,
-      );
+      // throw new Error(
+      //   `Scraper ${scraper} does not export a function, found ${typeof scrape}`,
+      // );
+      return;
     }
     if (!config) {
       throw new Error(`Scraper ${scraper} does not export a config`);
     }
+    if (!enabled) {
+      return;
+    }
     let queue = await Prisma.scraperQueue.findMany({
+      where: { website: config.name.toLowerCase() },
+    });
+    Prisma.scraperQueue.deleteMany({
       where: { website: config.name.toLowerCase() },
     });
     console.log(queue);
@@ -36,9 +45,15 @@ const main = async () => {
       let title = rest.title;
       if (foundArticle && foundArticle.title === title) continue;
       const newTitle = await titleGenerator(
-        title,
-        rest.content,
-        config.language,
+        // title,
+        // rest.content,
+        // config.language,
+        {
+          articleTitle: title,
+          articleContent: rest.content,
+          language: config.language,
+          articleUnderTitle: rest.underTitle,
+        },
       );
 
       if (foundArticle) {
@@ -69,3 +84,6 @@ const main = async () => {
 };
 
 main();
+
+// every minute
+// setInterval(main, 1000 * 60);
