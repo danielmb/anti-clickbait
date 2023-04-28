@@ -81,8 +81,7 @@ let scrape: Scrape = async (queue) => {
         return new URL(url, config.url).href;
       }
     })
-    .get()
-    .slice(0, 10);
+    .get();
 
   if (queue) {
     // push all urls to queue
