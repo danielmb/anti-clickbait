@@ -11,10 +11,20 @@
   },
   "content_scripts": [
     {
-      "js": ["scripts/content.js"],
-      "matches": ["https://www.dagbladet.no/*", "https://www.an.no/*"]
+      "js": ["scripts/websites/an.js"],
+      "matches": ["https://www.an.no/*"]
+    },
+    {
+      "js": ["scripts/websites/dagbladet.js"],
+      "matches": ["https://www.dagbladet.no/*"]
     }
   ],
   "permissions": ["storage"],
-  "host_permissions": ["http://localhost:3000/*", "https://www.dagbladet.no/*"]
+  "host_permissions": ["http://localhost:3000/*", "https://www.dagbladet.no/*"],
+  "web_accessible_resources": [
+    {
+      "resources": ["scripts/lib/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
