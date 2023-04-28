@@ -44,6 +44,7 @@ let config: ScrapeConfig = {
 
 let scrapeArticle = async (url: string): Promise<Article | null> => {
   // const url = articleUrls[0];
+
   const res = await axios.get(url).catch((err) => {
     console.log(err);
     return null;
@@ -53,8 +54,7 @@ let scrapeArticle = async (url: string): Promise<Article | null> => {
   // remove all style and script tags
   $('style').remove();
   $('script').remove();
-  console.log('scraping article');
-  console.log(url);
+
   let article = await newsScrape($, url);
   if (article) {
     return {
@@ -81,7 +81,9 @@ let scrape: Scrape = async (queue) => {
         return new URL(url, config.url).href;
       }
     })
-    .get();
+    .get()
+    .slice(0, 10);
+
   if (queue) {
     // push all urls to queue
     for (const queueItem of queue) {
@@ -92,7 +94,7 @@ let scrape: Scrape = async (queue) => {
   articleUrls = articleUrls.filter((url) => filter(url));
   let articles: Article[] = [];
   for (const url of articleUrls) {
-    console.log('scraping article' + url);
+    // console.log('scraping article' + url);
     // TODO: Move this out so you can access it from other places. Possibly add a new function to the scraper type
     const article = await scrapeArticle(url);
     if (article) articles.push(article);
