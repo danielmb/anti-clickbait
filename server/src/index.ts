@@ -11,7 +11,6 @@ export type rootGetResponse = {
   article: Article;
 };
 app.get('/', async (req, res, next) => {
-  console.log('GET /');
   try {
     const { url } = rootGetSchema.parse(req.query);
     let website = new URL(url).hostname.split('.')[1];
@@ -42,8 +41,8 @@ app.get('/', async (req, res, next) => {
           code: 'article_not_found',
         });
       }
-      return res.status(404).json({
-        message: 'Article not found',
+      return res.status(202).json({
+        message: 'Article not found, in queue',
         code: 'article_not_found',
       });
     }
