@@ -18,10 +18,12 @@ const links = document.getElementsByTagName('a');
             continue;
           } else {
             let header = kids[j];
-            let article = hentTittel(l, kids[j]).catch((err) => {
+            let article = await hentTittel(l, kids[j]).catch((err) => {
               console.log('err', err);
-              return;
+              return null;
             });
+            console.log(l);
+            console.log('article', article);
             if (article) {
               let oldTitle = article.title;
               let aiTitle = article.aiGeneratedTitle;

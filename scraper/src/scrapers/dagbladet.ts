@@ -7,11 +7,10 @@ import {
 import axios from 'axios';
 import { CheerioAPI, load } from 'cheerio';
 import fs from 'fs';
-// let allowed = ['nyheter', 'tema', 'kjenids', 'sport', 'studio'];
-let allowed = ['video'];
+let allowed = ['nyheter', 'tema', 'kjenids', 'sport', 'studio', 'video'];
 let filter = (url: string) => {
   if (
-    !url.startsWith('https://www.dagbladet.no/') ||
+    !url.startsWith('https://www.dagbladet.no/') &&
     !url.startsWith('https://dinside.dagbladet.no/')
   )
     return false;
@@ -87,6 +86,7 @@ let videoScrape = async ($: CheerioAPI, url: string) => {
 let scrapeArticle = async (url: string): Promise<Article | null> => {
   // const url = articleUrls[0];
   const { data } = await axios.get(url);
+  console.log(url);
   let $ = load(data);
   // remove all style and script tags
   $('style').remove();
@@ -120,9 +120,9 @@ let scrapeArticle = async (url: string): Promise<Article | null> => {
 };
 
 let scrape: Scrape = async (queue) => {
+  console.log('Scraping dagbladet!');
   const { data } = await axios.get('https://www.dagbladet.no/');
   let $ = load(data);
-
   let articleUrls: string[] = $('article')
     .map((i, el) => {
       const url = $(el).find('a').attr('href');
@@ -131,7 +131,6 @@ let scrape: Scrape = async (queue) => {
       }
     })
     .get();
-
   if (queue) {
     // push all urls to queue
     for (const queueItem of queue) {
@@ -140,8 +139,10 @@ let scrape: Scrape = async (queue) => {
   }
 
   articleUrls = articleUrls.filter((url) => filter(url));
-  let articles: Article[] = [];
+  console.log(articleUrls);
 
+  let articles: Article[] = [];
+  console.log(articleUrls);
   for (const url of articleUrls) {
     // TODO: Move this out so you can access it from other places. Possibly add a new function to the scraper type
     const article = await scrapeArticle(url);
