@@ -27,6 +27,7 @@ model ScraperQueue {
   website   String
   articleId String
   url       String
+  ip        String
   styleId   Int
   style     AiStyles @relation(fields: [styleId], references: [id])
   createdAt DateTime @default(now())
