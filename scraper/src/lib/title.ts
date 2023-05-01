@@ -5,30 +5,53 @@ interface TitleGeneratorProps {
   articleUnderTitle?: string;
   articleContent: string;
   language: string;
-  style?: string;
+  promptTemplate: string;
 }
-export const titleGenerator = async (
-  // articleTitle: string,
-  // articleUnderTitle?: string,
-  // articleContent: string,
-  // language: string,
-  {
+/**
+ *
+ * @param template Template to be converted
+ * @param data
+ * @returns  Converted template
+ * @example
+ * templateConverter("Hello {{name}}", {name: "world"}) // "Hello world"
+ * templateConverter("Hello {{name}}", {name: undefined}) // "Hello "
+ * templateConverter("Hello {{name}}", {}) // Error "Not all variables are replaced"
+ */
+export const templateConverter = async (
+  template: string,
+  data: {
+    [key: string]: string | undefined;
+  },
+) => {
+  let result = template;
+  for (const key in data) {
+    result = result.replace(`{{${key}}}`, data[key] || '');
+  }
+  if (result.match(/{{.*}}/)) {
+    throw new Error('Not all variables are replaced');
+  }
+  return result;
+};
+export const titleGenerator = async ({
+  articleTitle,
+  articleUnderTitle,
+  articleContent,
+  language,
+  promptTemplate,
+}: TitleGeneratorProps) => {
+  let convertedPrompt = await templateConverter(promptTemplate, {
     articleTitle,
     articleUnderTitle,
     articleContent,
     language,
-    style,
-  }: TitleGeneratorProps,
-) => {
+  }).catch((e) => {
+    throw new Error('Invalid template');
+  });
   let chat = new openai.Chat({
     apiKey: config.OPENAI_API_KEY,
   });
   chat.addMessage({
-    content: `You are tasked with creating a less clickbaity title an article.
-The article title should easily convey the content of the article.
-The new title have to be in ${language}.
-Your should only reply with the new title. Do not inclue any comments or other text.
-`,
+    content: convertedPrompt,
     role: 'system',
   });
 
@@ -40,8 +63,9 @@ Your should only reply with the new title. Do not inclue any comments or other t
     content: prompt,
     role: 'user',
   });
-  console.log(chat.messages[1]);
+  console.log(chat.messages);
   let generatedMessage = await chat.createChatCompletion();
   if (!generatedMessage.data.choices[0].message) return articleTitle;
+  console.log(generatedMessage.data.choices[0].message.content);
   return generatedMessage.data.choices[0].message?.content;
 };

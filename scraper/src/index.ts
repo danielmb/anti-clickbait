@@ -15,7 +15,18 @@ const main = async () => {
   });
   if (styles.length === 0) {
     console.log('No styles found');
-    return;
+    // create default style
+    let defaultStyle = await Prisma.aiStyles.create({
+      data: {
+        styleName: 'clickbait-remover',
+        active: true,
+        prompt: `You are tasked with creating a less clickbaity title an article.
+The article title should easily convey the content of the article.
+The new title have to be in {{language}}.
+Your should only reply with the new title. Do not inclue any comments or other text.`,
+      },
+    });
+    styles.push(defaultStyle);
   }
 
   for (const scraper of scrapers) {
@@ -70,6 +81,7 @@ const main = async () => {
             articleContent: rest.content,
             language: config.language,
             articleUnderTitle: rest.underTitle,
+            promptTemplate: style.prompt,
           },
         );
 
