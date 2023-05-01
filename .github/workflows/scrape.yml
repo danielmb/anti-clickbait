@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    
       
 jobs:
   build:
@@ -20,20 +24,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Write .env
-        run: |
-          echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env
-          echo "DATABASE_URL=${DATABASE_URL}" >> .env 
-      - name: Upload .env 
-        uses: actions/upload-artifact@v2
-        with:
-          name: env
-          path: .env
-          retention-days: 1
-      # this is just for debugging
       - name: npm install, build, and test
         run: |
           cd ./scraper
           npm install
           npx prisma generate
+          npx prisma migrate dev --name init
           npm run start

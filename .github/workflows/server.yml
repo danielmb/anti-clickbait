@@ -1,0 +1,52 @@
+name: Deploy website -not complete -do not use
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [19.x]
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, build
+        run: |
+          cd ./server
+          npm install
+          npx prisma generate
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: server
+          path: ./server/dist
+  deploy:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [19.x]
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: server
+          path: ./server/dist
+      - name: npm install, build
+        run: |
+          cd ./server
+          npm install
+          npx prisma generate
+          npm run start
