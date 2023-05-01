@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { Article, Scrape, ScrapeFile } from './types/scraper.types';
-import { PrismaClient } from '@prisma/client';
+import { Scrape, ScrapeFile } from './types/scraper.types';
+import { AiStyles, Article, PrismaClient } from '@prisma/client';
 import { titleGenerator } from './lib/title';
 const scrapersPath = path.join(__dirname, 'scrapers');
 
@@ -10,6 +10,14 @@ const scrapers = fs.readdirSync(scrapersPath).filter((file) => {
 });
 const Prisma = new PrismaClient();
 const main = async () => {
+  let styles = await Prisma.aiStyles.findMany({
+    where: { active: true },
+  });
+  if (styles.length === 0) {
+    console.log('No styles found');
+    return;
+  }
+
   for (const scraper of scrapers) {
     console.log(scraper);
     const {
@@ -52,36 +60,43 @@ const main = async () => {
       if (title.length > 100) continue;
       if (rest.content.length > 10000) continue;
       if (rest.underTitle && rest.underTitle?.length > 5000) continue;
-      const newTitle = await titleGenerator(
-        // title,
-        // rest.content,
-        // config.language,
-        {
-          articleTitle: title,
-          articleContent: rest.content,
-          language: config.language,
-          articleUnderTitle: rest.underTitle,
-        },
-      );
+      for (const style of styles) {
+        const newTitle = await titleGenerator(
+          // title,
+          // rest.content,
+          // config.language,
+          {
+            articleTitle: title,
+            articleContent: rest.content,
+            language: config.language,
+            articleUnderTitle: rest.underTitle,
+          },
+        );
 
-      if (foundArticle) {
-        await Prisma.article.update({
-          where: { id: foundArticle.id },
-          data: {
-            title: rest.title,
-            aiGeneratedTitle: newTitle,
-          },
-        });
-      } else {
-        await Prisma.article.create({
-          data: {
-            title: rest.title,
-            url: rest.url,
-            articleId: id,
-            aiGeneratedTitle: newTitle,
-            website: config.name.toLowerCase(),
-          },
-        });
+        if (foundArticle) {
+          await Prisma.article.update({
+            where: { id: foundArticle.id },
+            data: {
+              title: rest.title,
+              aiGeneratedTitle: newTitle,
+            },
+          });
+        } else {
+          await Prisma.article.create({
+            data: {
+              title: rest.title,
+              url: rest.url,
+              articleId: id,
+              aiGeneratedTitle: newTitle,
+              website: config.name.toLowerCase(),
+              style: {
+                connect: {
+                  id: style.id,
+                },
+              },
+            },
+          });
+        }
       }
       await Prisma.scraperQueue.deleteMany({
         where: { url: rest.url },
