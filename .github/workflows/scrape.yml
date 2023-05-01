@@ -20,6 +20,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Write .env
+        run: |
+          echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env
+          echo "DATABASE_URL=${DATABASE_URL}" >> .env 
+      # this is just for debugging
       - name: npm install, build, and test
         run: |
           cd ./scraper
