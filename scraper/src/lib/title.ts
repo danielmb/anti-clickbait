@@ -5,6 +5,7 @@ interface TitleGeneratorProps {
   articleUnderTitle?: string;
   articleContent: string;
   language: string;
+  style?: string;
 }
 export const titleGenerator = async (
   // articleTitle: string,
@@ -16,6 +17,7 @@ export const titleGenerator = async (
     articleUnderTitle,
     articleContent,
     language,
+    style,
   }: TitleGeneratorProps,
 ) => {
   let chat = new openai.Chat({
