@@ -53,7 +53,6 @@ app.get('/', async (req, res, next) => {
         await Prisma.scraperQueue.create({
           data: {
             url: url,
-            articleId: 'not implemented',
             website: website.toLowerCase(),
             ip: ip,
             styleId: style.id,
