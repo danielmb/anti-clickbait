@@ -2,23 +2,44 @@ import express from 'express';
 import { z } from 'zod';
 import { Article, PrismaClient } from '@prisma/client';
 const app = express();
+const Prisma = new PrismaClient();
 
 const rootGetSchema = z.object({
   url: z.string(),
+  styleName: z.string(),
 });
-const Prisma = new PrismaClient();
 export type rootGetResponse = {
   article: Article;
 };
 app.get('/', async (req, res, next) => {
+  // get ip address from request
+
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  if (!ip || typeof ip !== 'string') {
+    return res.status(400).json({
+      message: 'Invalid request',
+      code: 'invalid_request_error',
+    });
+  }
   try {
-    const { url } = rootGetSchema.parse(req.query);
+    const { url, styleName } = await rootGetSchema.parseAsync(req.query);
     let website = new URL(url).hostname.split('.')[1];
+    let style = await Prisma.aiStyles.findFirst({
+      where: {
+        styleName: styleName,
+        active: true,
+      },
+    });
+    if (!style) {
+      return res.status(400).json({
+        message: 'Invalid style',
+        code: 'invalid_request_error',
+      });
+    }
     let found = await Prisma.article.findFirst({
       where: {
-        // website: website.toLowerCase(),
-        // articleId: id,
         url: url,
+        styleId: style.id,
       },
     });
     console.log(found);
@@ -34,6 +55,8 @@ app.get('/', async (req, res, next) => {
             url: url,
             articleId: 'not implemented',
             website: website.toLowerCase(),
+            ip: ip,
+            styleId: style.id,
           },
         });
         return res.status(202).json({
@@ -62,7 +85,6 @@ app.use(
     res: express.Response,
     next: express.NextFunction,
   ) => {
-    console.log('ErroR!!!');
     if (err instanceof z.ZodError) {
       res.status(400).json({
         message: err.message,
