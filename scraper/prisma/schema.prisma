@@ -14,7 +14,6 @@ datasource db {
 model Article {
   id               Int      @id @default(autoincrement())
   website          String
-  articleId        String
   title            String
   aiGeneratedTitle String
   url              String
@@ -26,7 +25,6 @@ model Article {
 model ScraperQueue {
   id        Int      @id @default(autoincrement())
   website   String
-  articleId String
   url       String
   ip        String
   styleId   Int

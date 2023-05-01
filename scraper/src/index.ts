@@ -62,9 +62,9 @@ Your should only reply with the new title. Do not inclue any comments or other t
     // throw '';
 
     for (const article of data) {
-      const { id, ...rest } = article;
+      const { ...rest } = article;
       let foundArticle = await Prisma.article.findFirst({
-        where: { articleId: id },
+        where: { url: rest.url },
       });
       let title = rest.title;
       if (foundArticle && foundArticle.title === title) continue;
@@ -99,7 +99,6 @@ Your should only reply with the new title. Do not inclue any comments or other t
             data: {
               title: rest.title,
               url: rest.url,
-              articleId: id,
               aiGeneratedTitle: newTitle,
               website: config.name.toLowerCase(),
               style: {
