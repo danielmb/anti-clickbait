@@ -36,6 +36,7 @@ model AiStyles {
   id           Int            @id @default(autoincrement())
   styleName    String
   prompt       String
+  active       Boolean        @default(true)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   Article      Article[]
