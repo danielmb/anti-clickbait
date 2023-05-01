@@ -24,6 +24,12 @@ jobs:
         run: |
           echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env
           echo "DATABASE_URL=${DATABASE_URL}" >> .env 
+      - name: Upload .env 
+        uses: actions/upload-artifact@v2
+        with:
+          name: env
+          path: .env
+          retention-days: 1
       # this is just for debugging
       - name: npm install, build, and test
         run: |
