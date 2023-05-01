@@ -21,7 +21,7 @@ jobs:
         run: |
           cd ./scraper
           npm install
-          npx prsima generate
+          npx prisma generate
           npm run start
           
 
