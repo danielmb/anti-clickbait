@@ -39,7 +39,7 @@ jobs:
         node-version: [19.x]
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DEPLOYMENT_PATH: ~/www
+      DEPLOYMENT_PATH: /home/anticlickbait/www
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
