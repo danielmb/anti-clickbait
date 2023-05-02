@@ -21,8 +21,10 @@
   ],
   "permissions": ["storage"],
   "host_permissions": [
-    "http://therack.ddns.net:30000/*",
-    "https://www.dagbladet.no/*"
+    "https://therack.ddns.net:30000/*",
+    "https://www.dagbladet.no/*",
+    "https://www.an.no/*",
+    "https://www.nrk.no/*"
   ],
   "web_accessible_resources": [
     {

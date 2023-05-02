@@ -38,10 +38,7 @@ const setStorage = (key, value) => {
 export const getUrl = async () => {
   const savedUrl = await getStorage('url');
   if (!savedUrl) {
-    await setStorage(
-      'url',
-      'https://cors-anywhere.herokuapp.com/http://therack.ddns.net:30000/',
-    );
+    await setStorage('url', 'https://therack.ddns.net:30000/');
   }
   return savedUrl;
 };
@@ -61,7 +58,9 @@ export async function hentTittel(url) {
 
   // let response = await fetch('localhost:3000/?url=' + encodeURIComponent(url));
 
-  let response = await fetch(newUrl).catch((err) => {
+  let response = await fetch(newUrl, {
+    method: 'GET',
+  }).catch((err) => {
     console.error('err', err);
     throw err;
   });
@@ -74,15 +73,6 @@ export async function hentTittel(url) {
     if (data != '') {
       return data.article;
     }
-  }
-  if (response.status === 403) {
-    alert('Forbidden');
-    window.open('https://cors-anywhere.herokuapp.com/corsdemo');
-    throw new Error('Forbidden');
-  }
-  if (response.status === 429) {
-    alert('Too many requests');
-    throw new Error('Too many requests');
   }
 }
 
