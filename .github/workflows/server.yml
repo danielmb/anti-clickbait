@@ -45,8 +45,6 @@ jobs:
           name: server
           path: ./server/dist
       - name: Move server
-        # move server folder to /etc/anticlickbait/www
-        # do not copy  server/src and  server/node_modules
         run: |
           cd ./server
           sudo rsync -av --progress --exclude='src' --exclude='node_modules' ./ /etc/anticlickbait/www
