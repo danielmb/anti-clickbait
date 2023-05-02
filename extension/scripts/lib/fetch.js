@@ -80,7 +80,7 @@ export async function hentTittel(url) {
 export async function getStyles() {
   const savedUrl = await getUrl();
   const newUrl = new URL(savedUrl);
-  newUrl.pathname = '/styles';
+  newUrl.pathname = '/style';
   let response = await fetch(newUrl).catch((err) => {
     console.error('err', err);
     throw err;
