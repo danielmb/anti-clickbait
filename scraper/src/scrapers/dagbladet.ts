@@ -155,4 +155,4 @@ export default scrape;
 
 export { config };
 
-export let enabled = false;
+export let enabled = true;
