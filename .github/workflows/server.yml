@@ -12,6 +12,61 @@ jobs:
         node-version: [19.x]
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DEPLOYMENT_PATH: ~/www
+
     steps:
-      - name: Echo account name linux
-        run: whoami
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, build
+        run: |
+          cd ./server
+          npm install
+          npx prisma generate
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: server
+          path: ./server/dist
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    strategy:
+      matrix:
+        node-version: [19.x]
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DEPLOYMENT_PATH: ~/www
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: server
+          path: ./server/dist
+      - name: Move server
+        # move it to home directory
+        run: |
+          cd ./server
+          mkdir -p $DEPLOYMENT_PATH
+          rsync -av --progress --exclude='src' --exclude='node_modules' ./ $DEPLOYMENT_PATH
+
+      - name: npm install, build
+        run: |
+          cd $DEPLOYMENT_PATH
+          echo $PWD
+          ls -la
+          npm install
+          npx prisma generate
+          npm run build
+      - name: pm2 restart if exists else start
+        run: |
+          cd $DEPLOYMENT_PATH
+          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start
