@@ -1,6 +1,11 @@
 import express from 'express';
 import { z } from 'zod';
 import { AiStyles, Article, PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import http from 'http';
+
 const app = express();
 const Prisma = new PrismaClient();
 
@@ -11,6 +16,14 @@ const rootGetSchema = z.object({
 export type rootGetResponse = {
   article: Article;
 };
+
+const privateKey = fs.readFileSync(
+  z.string().parse(process.env.PRIVATE_KEY_PATH),
+);
+const certificate = fs.readFileSync(
+  z.string().parse(process.env.CERTIFICATE_PATH),
+);
+
 app.get('/', async (req, res, next) => {
   // get ip address from request
 
@@ -80,6 +93,7 @@ app.get('/', async (req, res, next) => {
 export type GetStylesResponse = {
   styles: AiStyles[];
 };
+
 app.get('/styles', async (req, res, next) => {
   try {
     let styles = await Prisma.aiStyles.findMany({
@@ -122,6 +136,29 @@ app.use(
   },
 );
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server listening on port ${process.env.PORT || 3000}`);
-});
+// app.listen(process.env.PORT || 3000, () => {
+//   console.log(`Server listening on port ${process.env.PORT || 3000}`);
+// });
+
+const httpsServer = https
+  .createServer(
+    {
+      key: privateKey,
+      cert: certificate,
+    },
+    app,
+  )
+  .listen(process.env.PORT || 3000, () => {
+    console.log(`Server listening on port ${process.env.PORT || 3000}`);
+  });
+
+const httpServer = http
+  .createServer((req, res) => {
+    res.writeHead(301, {
+      Location: `https://${req.headers.host}${req.url}`,
+    });
+    res.end();
+  })
+  .listen(80, () => {
+    console.log(`Server listening on port 80`);
+  });

@@ -12,8 +12,9 @@ jobs:
         node-version: [19.x]
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PRIVATE_KEY_PATH: ${{ secrets.PRIVATE_KEY_PATH }}
+      CERTIFICATE_PATH: ${{ secrets.CERTIFICATE_PATH }}
       DEPLOYMENT_PATH: ~/www
-
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -39,6 +40,8 @@ jobs:
         node-version: [19.x]
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PRIVATE_KEY_PATH: ${{ secrets.PRIVATE_KEY_PATH }}
+      CERTIFICATE_PATH: ${{ secrets.CERTIFICATE_PATH }}
       DEPLOYMENT_PATH: /home/anticlickbait/www
     steps:
       - uses: actions/checkout@v3
@@ -68,4 +71,4 @@ jobs:
           # set database url
         run: |
           cd $DEPLOYMENT_PATH
-          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start -- --port $PORT --DATABASE_URL $DATABASE_URL
+          pm2 restart anticlickbait --update-env || pm2 start npm --name anticlickbait -- start -- --port $PORT --DATABASE_URL $DATABASE_URL  --PRIVATE_KEY_PATH $PRIVATE_KEY_PATH --CERTIFICATE_PATH $CERTIFICATE_PATH
