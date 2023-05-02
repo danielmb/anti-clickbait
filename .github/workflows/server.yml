@@ -52,7 +52,6 @@ jobs:
           name: server
           path: ./server/dist
       - name: Move server
-        # move it to home directory
         run: |
           cd ./server
           mkdir -p $DEPLOYMENT_PATH
@@ -64,6 +63,8 @@ jobs:
           npx prisma generate
           npm run build
       - name: pm2 restart if exists else start
+        env:
+          PORT: 30000
         run: |
           cd $DEPLOYMENT_PATH
-          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start
+          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start -- --port $PORT
