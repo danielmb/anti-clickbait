@@ -4,9 +4,13 @@ import { AiStyles, Article, PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
-import http from 'http';
-
+import cors from 'cors';
 const app = express();
+app.use(
+  cors({
+    origin: '*',
+  }),
+);
 const Prisma = new PrismaClient();
 
 const rootGetSchema = z.object({
@@ -153,14 +157,3 @@ const httpsServer = https
   .listen(process.env.PORT || 3000, () => {
     console.log(`Server listening on port ${process.env.PORT || 3000}`);
   });
-
-// const httpServer = http
-//   .createServer((req, res) => {
-//     res.writeHead(301, {
-//       Location: `https://${req.headers.host}${req.url}`,
-//     });
-//     res.end();
-//   })
-//   .listen(80, () => {
-//     console.log(`Server listening on port 80`);
-//   });
