@@ -29,5 +29,8 @@
       "resources": ["scripts/lib/*"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup/index.html"
+  }
 }
