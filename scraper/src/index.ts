@@ -63,15 +63,18 @@ Your should only reply with the new title. Do not inclue any comments or other t
 
     for (const article of data) {
       const { ...rest } = article;
-      let foundArticle = await Prisma.article.findFirst({
-        where: { url: rest.url },
-      });
-      let title = rest.title;
-      if (foundArticle && foundArticle.title === title) continue;
-      if (title.length > 100) continue;
-      if (rest.content.length > 10000) continue;
-      if (rest.underTitle && rest.underTitle?.length > 5000) continue;
       for (const style of styles) {
+        let foundArticle = await Prisma.article.findFirst({
+          where: {
+            url: rest.url,
+            styleId: style.id,
+          },
+        });
+        let title = rest.title;
+        if (foundArticle && foundArticle.title === title) continue;
+        if (title.length > 100) continue;
+        if (rest.content.length > 10000) continue;
+        if (rest.underTitle && rest.underTitle?.length > 5000) continue;
         // make sure we dont have any duplicates
         const newTitle = await titleGenerator(
           // title,
