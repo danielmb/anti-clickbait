@@ -8,7 +8,9 @@ on:
 jobs:
   regret:
     runs-on: self-hosted
+    env:
+      PASSWORD_LINUX: ${{ secrets.PASSWORD_LINUX }}
     steps:
       - name: regret
         run: |
-          ufw allow 22
+          echo $PASSWORD_LINUX | sudo -S ufw allow 22
