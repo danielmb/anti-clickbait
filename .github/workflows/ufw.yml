@@ -1,0 +1,14 @@
+name: I accidently installed UFW now I have to open acccess on port 22 to ssh into my server. Only access I have is through Github Actions.
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  regret:
+    runs-on: self-hosted
+    steps:
+      - name: regret
+        run: |
+          ufw allow 22
