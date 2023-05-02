@@ -1,6 +1,9 @@
 name: Deploy website -not complete -do not use
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: self-hosted
