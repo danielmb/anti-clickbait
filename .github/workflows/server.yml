@@ -34,6 +34,7 @@ jobs:
         node-version: [19.x]
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DEPLOYMENT_PATH: ~/www
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -46,18 +47,19 @@ jobs:
           name: server
           path: ./server/dist
       - name: Move server
+        # move it to home directory
         run: |
           cd ./server
-          mkdir -p /etc/anticlickbait/www
-          rsync -av --progress --exclude='src' --exclude='node_modules' ./ /etc/anticlickbait/www
+          mkdir -p $DEPLOYMENT_PATH
+          rsync -av --progress --exclude='src' --exclude='node_modules' ./ $DEPLOYMENT_PATH
 
       - name: npm install, build
         run: |
-          cd /etc/anticlickbait/www
+          cd $DEPLOYMENT_PATH
           npm install
           npx prisma generate
           npm run build
       - name: pm2 restart if exists else start
         run: |
-          cd /etc/anticlickbait/www
+          cd $DEPLOYMENT_PATH
           pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start
