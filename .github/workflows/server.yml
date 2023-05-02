@@ -48,7 +48,7 @@ jobs:
       - name: Move server
         run: |
           cd ./server
-          sudo rsync -av --progress --exclude='src' --exclude='node_modules' ./ /etc/anticlickbait/www
+          rsync -av --progress --exclude='src' --exclude='node_modules' ./ /etc/anticlickbait/www
 
       - name: npm install, build
         run: |
