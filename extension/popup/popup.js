@@ -32,7 +32,7 @@ const errorDiv = document.getElementById('error');
   const { getStorage } = await import(storage);
   const selectedStyle = await getStorage('style');
   /**
-   * @type {import('../../server/src/index').GetStylesResponse["styles"]}
+   * @type {import('../../server/src/controllers/style.controller').GetStylesResponse["styles"]}
    */
   const res = await getStyles();
   let selectedPrompt = res.find((style) => style.styleName === selectedStyle);
