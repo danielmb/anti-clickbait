@@ -57,12 +57,16 @@ jobs:
           cd ./server
           mkdir -p $DEPLOYMENT_PATH
           rsync -av --progress --exclude='src' --exclude='node_modules' ./ $DEPLOYMENT_PATH
+          echo $PWD
+          echo $DEPLOYMENT_PATH
+          cd $DEPLOYMENT_PATH
+          echo $PWD
 
       - name: npm install, build
         run: |
-          cd $DEPLOYMENT_PATH
           echo $PWD
-          ls -la
+          echo $DEPLOYMENT_PATH
+          cd $DEPLOYMENT_PATH
           npm install
           npx prisma generate
           npm run build
