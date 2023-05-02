@@ -44,9 +44,20 @@ jobs:
         with:
           name: server
           path: ./server/dist
-      - name: npm install, build
+      - name: Move server
+        # move server folder to /etc/anticlickbait/www
+        # do not copy  server/src and  server/node_modules
         run: |
           cd ./server
+          sudo rsync -av --progress --exclude='src' --exclude='node_modules' ./ /etc/anticlickbait/www
+
+      - name: npm install, build
+        run: |
+          cd /etc/anticlickbait/www
           npm install
           npx prisma generate
-          npm run start
+          npm run build
+      - name: pm2 restart if exists else start
+        run: |
+          cd /etc/anticlickbait/www
+          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start
