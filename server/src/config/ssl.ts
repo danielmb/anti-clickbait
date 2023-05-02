@@ -11,12 +11,7 @@ export const { PRIVATE_KEY_PATH, CERTIFICATE_PATH } = z
   .parse(process.env);
 // const privateKey = fs.readFileSync(PRIVATE_KEY_PATH);
 // const certificate = fs.readFileSync(CERTIFICATE_PATH);
-export const { privateKey, certificate } = z
-  .object({
-    privateKey: z.string(),
-    certificate: z.string(),
-  })
-  .parse({
-    privateKey: fs.readFileSync(PRIVATE_KEY_PATH),
-    certificate: fs.readFileSync(CERTIFICATE_PATH),
-  });
+export const { privateKey, certificate } = {
+  privateKey: fs.readFileSync(PRIVATE_KEY_PATH),
+  certificate: fs.readFileSync(CERTIFICATE_PATH),
+};
