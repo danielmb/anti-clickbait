@@ -1,6 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
-import { Article, PrismaClient } from '@prisma/client';
+import { AiStyles, Article, PrismaClient } from '@prisma/client';
 const app = express();
 const Prisma = new PrismaClient();
 
@@ -71,6 +71,29 @@ app.get('/', async (req, res, next) => {
     console.log(found);
     return res.status(200).send({
       article: found,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+export type GetStylesResponse = {
+  styles: AiStyles[];
+};
+app.get('/styles', async (req, res, next) => {
+  try {
+    let styles = await Prisma.aiStyles.findMany({
+      where: { active: true },
+    });
+    if (styles.length === 0) {
+      console.log('No styles found');
+      return res.status(404).json({
+        message: 'No styles found',
+        code: 'not_found',
+      });
+    }
+    return res.status(200).json({
+      styles: styles,
     });
   } catch (err) {
     next(err);
