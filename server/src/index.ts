@@ -152,13 +152,13 @@ const httpsServer = https
     console.log(`Server listening on port ${process.env.PORT || 3000}`);
   });
 
-const httpServer = http
-  .createServer((req, res) => {
-    res.writeHead(301, {
-      Location: `https://${req.headers.host}${req.url}`,
-    });
-    res.end();
-  })
-  .listen(80, () => {
-    console.log(`Server listening on port 80`);
-  });
+// const httpServer = http
+//   .createServer((req, res) => {
+//     res.writeHead(301, {
+//       Location: `https://${req.headers.host}${req.url}`,
+//     });
+//     res.end();
+//   })
+//   .listen(80, () => {
+//     console.log(`Server listening on port 80`);
+//   });
