@@ -65,6 +65,7 @@ jobs:
       - name: pm2 restart if exists else start
         env:
           PORT: 30000
+          # set database url
         run: |
           cd $DEPLOYMENT_PATH
-          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start -- --port $PORT
+          pm2 restart anticlickbait || pm2 start npm --name anticlickbait -- start -- --port $PORT --DATABASE_URL $DATABASE_URL

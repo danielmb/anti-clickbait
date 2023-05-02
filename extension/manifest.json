@@ -20,7 +20,10 @@
     }
   ],
   "permissions": ["storage"],
-  "host_permissions": ["http://localhost:3000/*", "https://www.dagbladet.no/*"],
+  "host_permissions": [
+    "http://therack.ddns.net:30000/*",
+    "https://www.dagbladet.no/*"
+  ],
   "web_accessible_resources": [
     {
       "resources": ["scripts/lib/*"],
