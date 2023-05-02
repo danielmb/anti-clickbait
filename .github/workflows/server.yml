@@ -28,6 +28,7 @@ jobs:
           path: ./server/dist
   deploy:
     runs-on: self-hosted
+    needs: build
     strategy:
       matrix:
         node-version: [19.x]
