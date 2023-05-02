@@ -27,19 +27,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 const errorDiv = document.getElementById('error');
 (async () => {
   const styleSelector = document.getElementById('style');
-
+  const promptTextArea = document.getElementById('prompt');
   const { getStyles } = await import(fetchJs);
+  const { getStorage } = await import(storage);
+  const selectedStyle = await getStorage('style');
   /**
-   * @type {import('../../server/src/index').GetStylesResponse}
+   * @type {import('../../server/src/index').GetStylesResponse["styles"]}
    */
   const res = await getStyles();
-
+  let selectedPrompt = res.find((style) => style.styleName === selectedStyle);
+  if (selectedPrompt) {
+    promptTextArea.value = selectedPrompt.prompt;
+  }
   res.forEach((style) => {
     const option = document.createElement('option');
     option.value = style.styleName;
     option.innerHTML = style.styleName;
+    if (style.styleName === selectedStyle) {
+      option.selected = true;
+      selectedPrompt = style;
+    }
     styleSelector.appendChild(option);
   });
+  ('');
 })();
 
 const reload = document.getElementById('reload');
