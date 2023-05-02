@@ -16,13 +16,15 @@ const rootGetSchema = z.object({
 export type rootGetResponse = {
   article: Article;
 };
+const { PRIVATE_KEY_PATH, CERTIFICATE_PATH } = z
+  .object({
+    PRIVATE_KEY_PATH: z.string(),
+    CERTIFICATE_PATH: z.string(),
+  })
+  .parse(process.env);
 
-const privateKey = fs.readFileSync(
-  z.string().parse(process.env.PRIVATE_KEY_PATH),
-);
-const certificate = fs.readFileSync(
-  z.string().parse(process.env.CERTIFICATE_PATH),
-);
+const privateKey = fs.readFileSync(PRIVATE_KEY_PATH);
+const certificate = fs.readFileSync(CERTIFICATE_PATH);
 
 app.get('/', async (req, res, next) => {
   // get ip address from request
