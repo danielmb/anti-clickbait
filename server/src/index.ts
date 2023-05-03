@@ -13,7 +13,7 @@ app.use(
     origin: '*',
   }),
 );
-
+app.use(express.json());
 app.use('/title', titleRouter);
 app.use('/style', styleRouter);
 
