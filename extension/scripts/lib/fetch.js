@@ -49,6 +49,7 @@ export async function hentTittel(url) {
   // to bypass ssl cors error
   const savedUrl = await getUrl();
   const newUrl = new URL(savedUrl);
+  newUrl.pathname = '/title';
   const style = await getStorage('style');
   if (!style || style === '') {
     throw new Error('No style selected');
@@ -67,7 +68,7 @@ export async function hentTittel(url) {
   if (response.status === 200) {
     // import the type
     /**
-     * @type {import('../../../server/src/index').rootGetResponse}
+     * @type {import('../../../server/src/controllers/title.controller').titleGetResponse}
      */
     let data = await response.json();
     if (data != '') {
@@ -79,14 +80,14 @@ export async function hentTittel(url) {
 export async function getStyles() {
   const savedUrl = await getUrl();
   const newUrl = new URL(savedUrl);
-  newUrl.pathname = '/styles';
+  newUrl.pathname = '/style';
   let response = await fetch(newUrl).catch((err) => {
     console.error('err', err);
     throw err;
   });
   if (response.status === 200) {
     /**
-     * @type {import('../../../server/src/index').GetStylesResponse}
+     * @type {import('../../../server/src/controllers/style.controller').GetStylesResponse}
      */
     let res = await response.json();
     return res.styles;

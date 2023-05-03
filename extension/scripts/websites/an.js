@@ -19,7 +19,7 @@ let main = async () => {
       if (!a) continue;
       const l = a.href;
       /**
-       * @type {import('../../../server/src/index').rootGetResponse["article"]}
+       * @type {import('../../../server/src/controllers/title.controller').titleGetResponse["article"]}
        */
       let data = await hentTittel(l);
       if (data) {

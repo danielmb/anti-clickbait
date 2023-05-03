@@ -1,9 +1,10 @@
-name: Deploy website -not complete -do not use
+name: Deploy website
 on:
   workflow_dispatch:
-  push:
-    branches:
+  push: 
+    branches: 
       - master
+      - testing
 jobs:
   build:
     runs-on: self-hosted
@@ -31,10 +32,52 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: server
-          path: ./server/dist
-  deploy:
+          path: ./server/dist      
+  testing:
     runs-on: self-hosted
     needs: build
+    strategy:
+      matrix:
+        node-version: [19.x]
+    environment: testing
+    env: 
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PRIVATE_KEY_PATH: ${{ secrets.PRIVATE_KEY_PATH }}
+      CERTIFICATE_PATH: ${{ secrets.CERTIFICATE_PATH }}
+      DEPLOYMENT_PATH: /home/anticlickbait/testing
+    steps: 
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: server
+          path: ./server/dist
+      - name: Move server
+        run: |
+          cd ./server
+          mkdir -p $DEPLOYMENT_PATH
+          rsync -av --progress --exclude='node_modules' ./ $DEPLOYMENT_PATH
+      - name: npm install, build
+        run: |
+          cd $DEPLOYMENT_PATH
+          npm install
+          npx prisma generate
+          npm run build
+      - name: pm2 restart if exists else start
+        env:
+          PORT: 3000
+        run: |
+          cd $DEPLOYMENT_PATH
+          pm2 restart anticlickbaitTesting --update-env || pm2 start npm --name anticlickbaitTesting -- start -- --port $PORT --DATABASE_URL $DATABASE_URL  --PRIVATE_KEY_PATH $PRIVATE_KEY_PATH --CERTIFICATE_PATH $CERTIFICATE_PATH
+  deploy:
+    runs-on: self-hosted
+    needs: testing
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    environment: production
     strategy:
       matrix:
         node-version: [19.x]
