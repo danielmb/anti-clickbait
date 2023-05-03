@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
@@ -12,6 +13,9 @@
       height: 100%;
       min-width: 300px;
       display: block;
+      background-image: url(res/layered-waves-haikei.svg);
+      background-repeat: no-repeat;
+      background-size:auto;
     }
 
     input {
@@ -53,32 +57,69 @@
       align-items: center;
       justify-content: center;
     }
+
+    .reloadbutton {
+      background-color: rgb(77, 16, 146);
+      width: 70vw;
+    }
+
+    .btn-primary{
+      color: rgb(77, 16, 146)
+    }
+
+    .applybutton {
+      background-color:rgb(77, 16, 146);
+      color: whitesmoke; 
+      font-size: 7vw;
+      font-weight: 500;
+      
+    }
+
+    .reloadicon {
+      width: 8vw;
+      transition: transform 0.5s ease-in-out;
+    }
+    .reloadbutton:hover .reloadicon{
+    -o-transform:rotate(720deg);
+    -ms-transform:rotate(720deg);
+    -moz-transform:rotate(720deg);
+    -webkit-transform:rotate(720deg);
+    transform:rotate(720deg); /* How many times it'll rotate = degrees÷360 */
+    }
+    .text {
+      color: wheat;
+      font-weight: bold;
+      text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+    }
   </style>
 </head>
-
 <body>
   <div class="container">
+    <br>
     <div class="form-group">
-      <input type="button" id="reload" value="Reload">
+      <button class="btn reloadbutton btn-outline-primary" id="reload"><img class="reloadicon" src="res/reload.svg"></button>
     </div>
     <div class="form-group">
-      <label for="style">Style</label>
-      <select name="style" id="style">
-      </select>
+      <label for="style" class="h4 text">Style</label>
+      <select name="style" id="style"></select>
 
     </div>
     <div class="form-group">
-      <label for="prompt">Prompt</label>
-      <textarea name="prompt" id="prompt" cols="30" rows="10"></textarea>
+      <label for="prompt" class="h3 text">Prompt</label>
+      <textarea name="prompt" id="prompt" class="form-control" cols="30" rows="7"></textarea>
       </div>
     <div class="form-group">
-      <label for="url">URL</label>
-      <input type="text" id="url" placeholder="URL">
+      <label for="url"><p class="h4 text">Server-URL</p></label>
+      <input type="text" id="url" class="form-control" placeholder="URL">
     </div>
+    <div id="error"></div>
+    <button class="btn applybutton btn-outline-primary" id="apply">Save!</button>
+    <br>
   </div>
-
-  <div id="error"></div>
-  <button id="apply">Apply</button>
 </body>
 <script src="popup.js"></script>
 
