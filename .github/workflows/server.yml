@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'server')
     strategy:
       matrix:
         node-version: [19.x]
