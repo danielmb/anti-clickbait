@@ -13,10 +13,16 @@ app.use(
     origin: '*',
   }),
 );
+app.set('view engine', 'ejs');
+app.set('views', '../views');
+// set views folder
+
 app.use(express.json());
 app.use('/title', titleRouter);
 app.use('/style', styleRouter);
-
+app.get('/admin', (req, res) => {
+  res.render('admin');
+});
 app.use(errorHandler);
 
 const httpsServer = https
