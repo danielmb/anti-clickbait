@@ -17,6 +17,10 @@
     {
       "js": ["scripts/websites/dagbladet.js"],
       "matches": ["https://www.dagbladet.no/*"]
+    },
+    {
+      "js": ["scripts/websites/nrk.js"],
+      "matches": ["https://www.nrk.no/*"]
     }
   ],
   "permissions": ["storage"],
