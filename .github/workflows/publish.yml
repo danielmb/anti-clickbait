@@ -9,7 +9,7 @@ jobs:
   publish:
     name: Publish to Chrome Web Store
     runs-on: ubuntu-latest
-    if: github.event_path == 'extension/manifest.json' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_path == 'extension/manifest.json'
     steps:
       - uses: actions/checkout@v2
       - name: Zip extension
