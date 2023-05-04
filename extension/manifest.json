@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AntiClickBait",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Replace Clickbait with Ai-generated Text!",
   "icons": {
     "16": "images/icon-16.png",
