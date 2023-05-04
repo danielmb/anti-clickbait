@@ -18,7 +18,7 @@ document.getElementById('apply').addEventListener('click', async () => {
       errorDiv.innerHTML = 'Invalid url';
     }
   }
-  // reload page
+  // reload page.
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.reload(tabs[0].id);
   });
