@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - server/**/*
-      - .github/workflows/deploy.yml
+      - .github/workflows/server.yml
     branches:
       - master
       - testing
