@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AntiClickBait",
-  "version": "1.0.4",
+  "version": "1.0.2",
   "description": "Replace Clickbait with Ai-generated Text!",
   "icons": {
     "16": "images/icon-16.png",
@@ -11,15 +11,15 @@
   },
   "content_scripts": [
     {
-      "js": ["scripts/websites/an.js"],
+      "js": ["scripts/websites/an.js", "scripts/background.js"],
       "matches": ["https://www.an.no/*"]
     },
     {
-      "js": ["scripts/websites/dagbladet.js"],
+      "js": ["scripts/websites/dagbladet.js", "scripts/background.js"],
       "matches": ["https://www.dagbladet.no/*"]
     },
     {
-      "js": ["scripts/websites/nrk.js"],
+      "js": ["scripts/websites/nrk.js", "scripts/background.js"],
       "matches": ["https://www.nrk.no/*"]
     }
   ],
