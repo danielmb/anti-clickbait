@@ -23,4 +23,10 @@ const main = async () => {
   }
 };
 
+window.dispatchEvent(new CustomEvent('reloadTitles'));
+
 main();
+window.addEventListener('reloadTitles', async () => {
+  main();
+});
+// on message from background.js

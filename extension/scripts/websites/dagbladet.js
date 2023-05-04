@@ -1,6 +1,6 @@
 const links = document.getElementsByTagName('a');
 
-(async () => {
+const main = async () => {
   const fetch = chrome.runtime.getURL('scripts/lib/fetch.js');
   const { hentTittel } = await import(fetch);
 
@@ -19,11 +19,8 @@ const links = document.getElementsByTagName('a');
           } else {
             let header = kids[j];
             let article = await hentTittel(l, kids[j]).catch((err) => {
-              console.log('err', err);
               return null;
             });
-            console.log(l);
-            console.log('article', article);
             if (article) {
               let oldTitle = article.title;
               let aiTitle = article.aiGeneratedTitle;
@@ -34,4 +31,9 @@ const links = document.getElementsByTagName('a');
       }
     }
   }
-})();
+};
+
+main();
+window.addEventListener('reloadTitles', async () => {
+  main();
+});
