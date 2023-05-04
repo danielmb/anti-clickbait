@@ -1,6 +1,10 @@
 // save the style to local storage
 const fetchJs = chrome.runtime.getURL('scripts/lib/fetch.js');
 const storage = chrome.runtime.getURL('scripts/lib/storage.js');
+const errorDiv = document.getElementById('error');
+const styleSelector = document.getElementById('style');
+const promptTextArea = document.getElementById('prompt');
+
 document.getElementById('apply').addEventListener('click', async () => {
   const style = document.getElementById('style').value;
   const url = document.getElementById('url').value;
@@ -14,6 +18,10 @@ document.getElementById('apply').addEventListener('click', async () => {
       errorDiv.innerHTML = 'Invalid url';
     }
   }
+  // reload page
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    chrome.tabs.reload(tabs[0].id);
+  });
 });
 document.addEventListener('DOMContentLoaded', async () => {
   let storageModule = await import(storage);
@@ -24,10 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // get styles from server
-const errorDiv = document.getElementById('error');
+
 (async () => {
-  const styleSelector = document.getElementById('style');
-  const promptTextArea = document.getElementById('prompt');
   const { getStyles } = await import(fetchJs);
   const { getStorage } = await import(storage);
   const selectedStyle = await getStorage('style');
@@ -55,4 +61,15 @@ const errorDiv = document.getElementById('error');
 const reload = document.getElementById('reload');
 reload.addEventListener('click', () => {
   chrome.runtime.reload();
+});
+
+styleSelector.addEventListener('change', async (e) => {
+  const { getStyles } = await import(fetchJs);
+  const styles = await getStyles();
+  const selectedStyle = styles.find(
+    (style) => style.styleName === e.target.value,
+  );
+  if (selectedStyle) {
+    promptTextArea.value = selectedStyle.prompt;
+  }
 });
