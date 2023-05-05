@@ -9,30 +9,46 @@ const promptTextArea = document.getElementById('prompt');
  */
 let tabs = {};
 let cachedStyle = null;
-document.getElementById('apply').addEventListener('click', async () => {
+// document.getElementById('apply').addEventListener('click', async () => {
+//   const style = document.getElementById('style').value;
+//   const url = document.getElementById('url').value;
+//   const storageModule = await import(storage);
+//   await storageModule.setStorage('style', style);
+//   if (url) {
+//     try {
+//       new URL(url);
+//       await storageModule.setStorage('url', url);
+//     } catch (err) {
+//       errorDiv.innerHTML = 'Invalid url';
+//     }
+//   }
+//   cachedStyle = style;
+//   // reload page.
+//   // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//   //   console.log(tabs);
+//   //   chrome.tabs.reload(tabs[0].id);
+//   // });
+//   for (const tabId in tabs) {
+//     // sendMessage to tab
+//     chrome.tabs.sendMessage(Number(tabId), { type: 'reload' });
+//   }
+// });
+
+// const refreshTabs = () => {
+//   for (const tabId in tabs) {
+//     chrome.tabs.sendMessage(Number(tabId), { type: 'reload' });
+//   }
+// };
+document.getElementById('style').addEventListener('change', async () => {
+  await saveStyle();
+});
+const saveStyle = async () => {
   const style = document.getElementById('style').value;
-  const url = document.getElementById('url').value;
   const storageModule = await import(storage);
   await storageModule.setStorage('style', style);
-  if (url) {
-    try {
-      new URL(url);
-      await storageModule.setStorage('url', url);
-    } catch (err) {
-      errorDiv.innerHTML = 'Invalid url';
-    }
-  }
   cachedStyle = style;
-  // reload page.
-  // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //   console.log(tabs);
-  //   chrome.tabs.reload(tabs[0].id);
-  // });
-  for (const tabId in tabs) {
-    // sendMessage to tab
-    chrome.tabs.sendMessage(Number(tabId), { type: 'reload' });
-  }
-});
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   let storageModule = await import(storage);
   const style = await storageModule.getStorage('style');
@@ -69,10 +85,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 })();
 
-const reload = document.getElementById('reload');
-reload.addEventListener('click', () => {
-  chrome.runtime.reload();
-});
+// const reload = document.getElementById('reload');
+// reload.addEventListener('click', () => {
+//   chrome.runtime.reload();
+// });
 
 styleSelector.addEventListener('change', async (e) => {
   const { getStyles } = await import(fetchJs);
