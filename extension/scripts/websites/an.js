@@ -1,12 +1,20 @@
-console.log('Loaded an.js');
-
 // wait for the page to load
 // get current url
 let url = window.location.href;
 // if website is www.an.no
 let main = async () => {
   const fetch = chrome.runtime.getURL('scripts/lib/fetch.js');
-
+  const storageJs = chrome.runtime.getURL('scripts/lib/storage.js');
+  const { getStorage, setStorage } = await import(storageJs);
+  let enabled = await getStorage('enabled').catch((err) => {
+    setStorage('enabled', true);
+    return true;
+  });
+  if (typeof enabled === 'undefined') {
+    setStorage('enabled', true);
+    enabled = true;
+  }
+  if (!enabled) return;
   const { hentTittel } = await import(fetch);
   if (url.match(/an\.no/)) {
     const articles = document.querySelectorAll('article.teaser_container');

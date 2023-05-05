@@ -9,36 +9,76 @@ const promptTextArea = document.getElementById('prompt');
  */
 let tabs = {};
 let cachedStyle = null;
-document.getElementById('apply').addEventListener('click', async () => {
-  const style = document.getElementById('style').value;
-  const url = document.getElementById('url').value;
-  const storageModule = await import(storage);
-  await storageModule.setStorage('style', style);
-  if (url) {
-    try {
-      new URL(url);
-      await storageModule.setStorage('url', url);
-    } catch (err) {
-      errorDiv.innerHTML = 'Invalid url';
-    }
-  }
-  cachedStyle = style;
-  // reload page.
-  // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //   console.log(tabs);
-  //   chrome.tabs.reload(tabs[0].id);
-  // });
+// document.getElementById('apply').addEventListener('click', async () => {
+//   const style = document.getElementById('style').value;
+//   const url = document.getElementById('url').value;
+//   const storageModule = await import(storage);
+//   await storageModule.setStorage('style', style);
+//   if (url) {
+//     try {
+//       new URL(url);
+//       await storageModule.setStorage('url', url);
+//     } catch (err) {
+//       errorDiv.innerHTML = 'Invalid url';
+//     }
+//   }
+//   cachedStyle = style;
+//   // reload page.
+//   // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//   //   console.log(tabs);
+//   //   chrome.tabs.reload(tabs[0].id);
+//   // });
+//   for (const tabId in tabs) {
+//     // sendMessage to tab
+//     chrome.tabs.sendMessage(Number(tabId), { type: 'reload' });
+//   }
+// });
+
+// };
+let statusDiv = document.getElementById('status');
+const refreshTabs = () => {
   for (const tabId in tabs) {
-    // sendMessage to tab
     chrome.tabs.sendMessage(Number(tabId), { type: 'reload' });
   }
+};
+document.getElementById('style').addEventListener('change', async () => {
+  await saveStyle();
 });
+const saveStyle = async () => {
+  const style = document.getElementById('style').value;
+  const storageModule = await import(storage);
+  await storageModule.setStorage('style', style);
+  cachedStyle = style;
+};
+document.getElementById('url').addEventListener('change', async () => {
+  const url = document.getElementById('url').value;
+  const storageModule = await import(storage);
+  try {
+    new URL(url);
+    await storageModule.setStorage('url', url);
+  } catch (err) {
+    errorDiv.innerHTML = 'Invalid url';
+  }
+});
+document.getElementById('toggleenable').addEventListener('click', async () => {
+  const storageModule = await import(storage);
+  // const enabled = await storageModule.getStorage('enabled');
+  await storageModule.setStorage(
+    'enabled',
+    document.getElementById('toggleenable').checked,
+  );
+
+  // refreshTabs();
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
   let storageModule = await import(storage);
   const style = await storageModule.getStorage('style');
   const url = await storageModule.getStorage('url');
+  const checked = await storageModule.getStorage('enabled');
   document.getElementById('style').value = style;
   document.getElementById('url').value = url;
+  document.getElementById('toggleenable').checked = checked;
 });
 
 // get styles from server
@@ -55,8 +95,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   let selectedPrompt = res.find((style) => style.styleName === selectedStyle);
   if (selectedPrompt) {
     promptTextArea.value = selectedPrompt.prompt;
+  } else {
+    selectedPrompt = res[0];
+    promptTextArea.value = selectedPrompt.prompt;
+    await saveStyle();
   }
-  cachedStyle = selectedPrompt.styleName;
   res.forEach((style) => {
     const option = document.createElement('option');
     option.value = style.styleName;
@@ -69,10 +112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 })();
 
-const reload = document.getElementById('reload');
-reload.addEventListener('click', () => {
-  chrome.runtime.reload();
-});
+// const reload = document.getElementById('reload');
+// reload.addEventListener('click', () => {
+//   chrome.runtime.reload();
+// });
 
 styleSelector.addEventListener('change', async (e) => {
   const { getStyles } = await import(fetchJs);
@@ -119,6 +162,7 @@ setInterval(() => {
       const div = document.createElement('div');
       div.innerHTML = element.url;
       div.id = tab;
+      div.classList.add('active-tab');
       activeTabsDiv.appendChild(div);
     }
   }

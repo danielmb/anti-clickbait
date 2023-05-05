@@ -1,15 +1,24 @@
-console.log('NRK');
 const main = async () => {
   const fetchJs = chrome.runtime.getURL('scripts/lib/fetch.js');
   const { hentTittel } = await import(fetchJs);
+  const storageJs = chrome.runtime.getURL('scripts/lib/storage.js');
+  const { getStorage, setStorage } = await import(storageJs);
+  let enabled = await getStorage('enabled').catch((err) => {
+    setStorage('enabled', true);
+    return true;
+  });
+  if (typeof enabled === 'undefined') {
+    setStorage('enabled', true);
+    enabled = true;
+  }
+  if (!enabled) return;
   const articles = document.querySelectorAll('.kur-room');
   if (!articles.length) return setTimeout(main, 1000);
   for (let i = 0, max = articles.length; i < max; i++) {
     const article = articles[i];
     const header = article.querySelector('.kur-room__title > span');
     const a = article.querySelector('a');
-    console.log('header', header);
-    console.log('a', a);
+
     if (!header) continue;
     if (!a) continue;
     const l = a.href;
