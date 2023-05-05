@@ -3,9 +3,14 @@ const main = async () => {
   const { hentTittel } = await import(fetchJs);
   const storageJs = chrome.runtime.getURL('scripts/lib/storage.js');
   const { getStorage, setStorage } = await import(storageJs);
-  const enabled = await getStorage('enabled').catch((err) => {
+  let enabled = await getStorage('enabled').catch((err) => {
     setStorage('enabled', true);
+    return true;
   });
+  if (typeof enabled === 'undefined') {
+    setStorage('enabled', true);
+    enabled = true;
+  }
   if (!enabled) return;
   const articles = document.querySelectorAll('.kur-room');
   if (!articles.length) return setTimeout(main, 1000);
