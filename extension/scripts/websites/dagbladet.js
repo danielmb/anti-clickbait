@@ -3,6 +3,12 @@ const links = document.getElementsByTagName('a');
 const main = async () => {
   const fetch = chrome.runtime.getURL('scripts/lib/fetch.js');
   const { hentTittel } = await import(fetch);
+  const storageJs = chrome.runtime.getURL('scripts/lib/storage.js');
+  const { getStorage, setStorage } = await import(storageJs);
+  const enabled = await getStorage('enabled').catch((err) => {
+    setStorage('enabled', true);
+  });
+  if (!enabled) return;
 
   for (let i = 0, max = links.length; i < max; i++) {
     let l = links[i].href;
