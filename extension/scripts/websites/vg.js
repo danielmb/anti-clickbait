@@ -1,5 +1,3 @@
-console.log('Loaded vg.js');
-
 // wait for the page to load
 // get current url
 let url = window.location.href;

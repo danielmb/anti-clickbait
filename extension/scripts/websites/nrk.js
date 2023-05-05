@@ -1,4 +1,3 @@
-console.log('NRK');
 const main = async () => {
   const fetchJs = chrome.runtime.getURL('scripts/lib/fetch.js');
   const { hentTittel } = await import(fetchJs);
@@ -14,8 +13,7 @@ const main = async () => {
     const article = articles[i];
     const header = article.querySelector('.kur-room__title > span');
     const a = article.querySelector('a');
-    console.log('header', header);
-    console.log('a', a);
+
     if (!header) continue;
     if (!a) continue;
     const l = a.href;

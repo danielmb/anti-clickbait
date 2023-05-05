@@ -1,5 +1,3 @@
-console.log('Loaded an.js');
-
 // wait for the page to load
 // get current url
 let url = window.location.href;
@@ -11,7 +9,6 @@ let main = async () => {
   const enabled = await getStorage('enabled').catch((err) => {
     setStorage('enabled', true);
   });
-  console.log('enabled', enabled);
   if (!enabled) return;
   const { hentTittel } = await import(fetch);
   if (url.match(/an\.no/)) {
