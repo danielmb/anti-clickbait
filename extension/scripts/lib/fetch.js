@@ -36,23 +36,34 @@ const setStorage = (key, value) => {
  * @returns {Promise<string>}
  */
 export const getUrl = async () => {
-  const savedUrl = await getStorage('url');
+  const savedUrl = await getStorage('url').catch((err) => {
+    return null;
+  });
   if (!savedUrl) {
     await setStorage('url', 'https://therack.ddns.net:30000/');
+    return 'https://therack.ddns.net:30000/';
   }
   return savedUrl;
 };
 export async function hentTittel(url) {
   const id = new URL(url).pathname.split('/')[3];
+  const fetchJs = chrome.runtime.getURL('scripts/lib/fetch.js');
+  const { getStyles } = await import(fetchJs);
   // const newUrl = new URL('http://localhost:3000/');
   // const newUrl = new URL('http://therack.ddns.net:30000/');
   // to bypass ssl cors error
   const savedUrl = await getUrl();
   const newUrl = new URL(savedUrl);
   newUrl.pathname = '/title';
-  const style = await getStorage('style');
+  let style = await getStorage('style');
   if (!style || style === '') {
-    throw new Error('No style selected');
+    let styles = await getStyles();
+    if (styles.length > 0) {
+      await setStorage('style', styles[0].styleName);
+      style = styles[0].styleName;
+    } else {
+      throw new Error('No style selected');
+    }
   }
   newUrl.searchParams.append('url', url);
   newUrl.searchParams.append('styleName', style);
