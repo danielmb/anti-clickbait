@@ -49,6 +49,26 @@ const saveStyle = async () => {
   cachedStyle = style;
 };
 
+const saveUrl = async () => {
+  const url = document.getElementById('url').value;
+  const storageModule = await import(storage);
+  const savedUrl = await storageModule.getStorage('url');
+  if (url !== savedUrl) {
+    try {
+      new URL(url);
+      await storageModule.setStorage('url', url);
+    } catch (err) {
+      errorDiv.innerHTML = 'Invalid url';
+    }
+  }
+};
+
+const saveEnable = async () => {
+  const enable = document.getElementById('toggleenable').checked;
+  const storageModule = await import(storage);
+  await storageModule.setStorage('enable', enable);
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   let storageModule = await import(storage);
   const style = await storageModule.getStorage('style');
@@ -101,7 +121,46 @@ styleSelector.addEventListener('change', async (e) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+/**
+ * @param {website} website
+ * @returns {Promise<website>}
+ */
+let addWebsite = async (website) => {
+  const storageModule = await import(storage);
+  let websites = await storageModule.getStorage('websites');
+  if (!websites) {
+    websites = [];
+    await storageModule.setStorage('websites', websites);
+  }
+  if (!websites.includes(website)) {
+    websites = await storageModule.getStorage('websites');
+    websites.push({
+      active: true,
+      style: null,
+      url: website,
+    });
+    await storageModule.setStorage('websites', websites);
+  }
+  return websites.find((w) => w.url === website);
+};
+
+/**
+ *
+ * @param {string} website
+ * @returns {Promise<website>}
+ */
+let getWebsite = async (website) => {
+  const storageModule = await import(storage);
+  let websites = await storageModule.getStorage('websites');
+  if (!websites) {
+    websites = [];
+    await storageModule.setStorage('websites', websites);
+  }
+  return websites.find((w) => w.url === website);
+};
+
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  const { getStyles } = await import(fetchJs);
   if (request.type === 'active') {
     tabs[sender.tab.id] = {
       active: true,
