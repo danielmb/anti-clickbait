@@ -21,6 +21,10 @@
     {
       "js": ["scripts/websites/nrk.js", "scripts/background.js"],
       "matches": ["https://www.nrk.no/*"]
+    },
+    {
+      "js": ["scripts/websites/vg.js", "scripts/background.js"],
+      "matches": ["https://www.vg.no/*"]
     }
   ],
   "permissions": ["storage"],

@@ -9,6 +9,7 @@ on:
 jobs:
   publish:
     name: Publish to Chrome Web Store
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
