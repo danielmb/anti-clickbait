@@ -91,7 +91,6 @@ let videoScrape = async ($: CheerioAPI, url: string) => {
 
 let scrapeArticle = async (url: string): Promise<Article | null> => {
   // const url = articleUrls[0];
-  console.log('Scraping article: ' + url);
   const { data } = await axios.get(url);
   const $ = load(data);
   let newsType = url.split('/')[3];
@@ -104,11 +103,9 @@ let scrapeArticle = async (url: string): Promise<Article | null> => {
 };
 
 let scrape: Scrape = async (queue) => {
-  console.log('Scraping dagbladet!');
   const { data } = await axios.get('https://www.nrk.no/');
   let $ = load(data);
   let sections = $('section.kur-floor');
-  console.log(sections.length);
   let articleUrls = sections
     .map((i, el) => {
       const url = $(el).find('a').attr('href');
@@ -129,7 +126,6 @@ let scrape: Scrape = async (queue) => {
     const article = await scrapeArticle(url);
     if (article) articles.push(article);
   }
-  console.log('Scraped ' + articles.length + ' articles!');
   return articles;
 };
 

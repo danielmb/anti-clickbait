@@ -68,8 +68,6 @@ let scrapeArticle = async (url: string): Promise<Article | null> => {
 let scrape: Scrape = async (queue) => {
   const { data } = await axios.get('https://www.an.no/');
   let $ = load(data);
-  console.log('scraping');
-  console.log($('article').length);
   let articleUrls: string[] = $('article')
     .map((i, el) => {
       let url = $(el).find('a').attr('href'); // if the href is a path, it will be relative to the current url
