@@ -68,7 +68,6 @@ let videoScrape = async ($: CheerioAPI, url: string) => {
 };
 let scrapeArticle = async (url: string): Promise<Article | null> => {
   // const url = articleUrls[0];
-  console.log('Scraping article: ' + url);
   let urlClass = new URL(url);
   let urlWithoutParams = urlClass.origin + urlClass.pathname;
   const { data } = await axios.get(url);
@@ -99,7 +98,6 @@ let scrape: Scrape = async (queue) => {
     let article = await scrapeArticle(url);
     if (article) articles.push(article);
   }
-  console.log(articles);
   return articles;
 };
 

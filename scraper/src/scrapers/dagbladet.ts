@@ -86,7 +86,6 @@ let videoScrape = async ($: CheerioAPI, url: string) => {
 let scrapeArticle = async (url: string): Promise<Article | null> => {
   // const url = articleUrls[0];
   const { data } = await axios.get(url);
-  console.log(url);
   let $ = load(data);
   // remove all style and script tags
   $('style').remove();
@@ -120,7 +119,6 @@ let scrapeArticle = async (url: string): Promise<Article | null> => {
 };
 
 let scrape: Scrape = async (queue) => {
-  console.log('Scraping dagbladet!');
   const { data } = await axios.get('https://www.dagbladet.no/');
   let $ = load(data);
   let articleUrls: string[] = $('article')
@@ -139,10 +137,8 @@ let scrape: Scrape = async (queue) => {
   }
 
   articleUrls = articleUrls.filter((url) => filter(url));
-  console.log(articleUrls);
 
   let articles: Article[] = [];
-  console.log(articleUrls);
   for (const url of articleUrls) {
     // TODO: Move this out so you can access it from other places. Possibly add a new function to the scraper type
     const article = await scrapeArticle(url);
