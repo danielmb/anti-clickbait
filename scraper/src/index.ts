@@ -88,9 +88,9 @@ Your should only reply with the new title. Do not inclue any comments or other t
             promptTemplate: style.prompt,
           },
         );
-
+        let createdArticle: Article;
         if (foundArticle) {
-          await Prisma.article.update({
+          createdArticle = await Prisma.article.update({
             where: { id: foundArticle.id },
             data: {
               title: rest.title,
@@ -99,7 +99,7 @@ Your should only reply with the new title. Do not inclue any comments or other t
             },
           });
         } else {
-          await Prisma.article.create({
+          createdArticle = await Prisma.article.create({
             data: {
               title: rest.title,
               url: rest.url,
@@ -114,6 +114,16 @@ Your should only reply with the new title. Do not inclue any comments or other t
             },
           });
         }
+        await Prisma.receipts.create({
+          data: {
+            article: {
+              connect: {
+                id: createdArticle.id,
+              },
+            },
+            amount: price,
+          },
+        });
       }
       await Prisma.scraperQueue.deleteMany({
         where: { url: rest.url },
