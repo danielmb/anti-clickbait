@@ -50,20 +50,31 @@ export async function POST(req: Request, res: Response, next: NextFunction) {
     let styles = await Prisma.aiStyles.findFirst({
       where: { styleName: styleName },
     });
-    if (styles) {
+    if (styles && styles.active) {
       return res.status(400).json({
         message: 'Style already exists',
         code: 'already_exists',
       });
     }
-    styles = await Prisma.aiStyles.create({
-      data: {
-        styleName: styleName,
-        active: true,
-        prompt: prompt,
-      },
-    });
-
+    if (styles && !styles.active) {
+      styles = await Prisma.aiStyles.update({
+        where: {
+          id: styles.id,
+        },
+        data: {
+          active: true,
+          prompt: prompt,
+        },
+      });
+    } else {
+      styles = await Prisma.aiStyles.create({
+        data: {
+          styleName: styleName,
+          active: true,
+          prompt: prompt,
+        },
+      });
+    }
     return res.status(200).json({
       styles: styles,
     });
