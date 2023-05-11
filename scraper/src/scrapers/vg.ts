@@ -9,70 +9,48 @@ import { CheerioAPI, load } from 'cheerio';
 import simplify from '../util/simplify';
 // import fs from 'fs';
 let allowed = [
-  'osloogviken',
   'nyheter',
-  'urix',
+  'rampelys',
   'sport',
-  'norge',
-  'tromsogfinnmark',
-  'sapmi',
-  'ytring',
-  'rogaland',
-  'trondelag',
-  'anmeldelser',
-  'kultur',
-  'innlandet',
-  'vestland',
+  'dinepenger',
+  'forbruker',
+  'tag',
+  'spill',
   'spesial',
-  'sorlandet',
-  'nordland',
 ];
 let news = [
-  'osloogviken',
   'nyheter',
-  'urix',
+  'rampelys',
   'sport',
-  'norge',
-  'tromsogfinnmark',
-  'sapmi',
-  'ytring',
-  'rogaland',
-  'trondelag',
-  'anmeldelser',
-  'kultur',
-  'innlandet',
-  'vestland',
+  'dinepenger',
+  'forbruker',
+  'tag',
+  'spill',
   'spesial',
-  'sorlandet',
-  'nordland',
 ];
-
 let filter = (url: string) => {
-  if (
-    !url.startsWith('https://www.nrk.no/') ||
-    url.startsWith('https:/www.nrk.no/video') ||
-    url === 'https://www.nrk.no/nyheter'
-  )
-    return false;
+  if (!url.startsWith('https://www.vg.no/')) return false;
+
   let newsType = url.split('/')[3];
   if (!allowed.includes(newsType)) return false;
-  // if (!allowed.includes(newsType)) return false;
   return true;
 };
 let config: ScrapeConfig = {
-  url: 'https://www.nrk.no/',
-  name: 'nrk',
+  url: 'https://www.vg.no/',
+  name: 'vg',
   language: 'Norwegian',
 };
 
 let newsScrape = ($: CheerioAPI, url: string) => {
   const id = new URL(url).pathname.split('/')[3];
-  const title = simplify($('h1.title').text());
-  const underTitle = simplify($('div.text-body p').first().text());
-  const content = simplify($('div.article-body').first().text());
-  const date = new Date(
-    $('div.article-dateline').find('time').attr('datetime')!,
-  );
+  const title = $('h1[data-test-tag="headline"]').text();
+  const underTitle = $('p[data-test-tag="lead-text"]').text();
+  // content is every p with a class that starts with hyperion-css
+  const content = $('article > p[class^="hyperion-css"]')
+    .get()
+    .map((p) => $(p).text())
+    .join('\n');
+  const date = new Date($('time').attr('datetime')!);
   return {
     title,
     content,
@@ -88,42 +66,36 @@ let studioScrape = async ($: CheerioAPI, url: string) => {
 let videoScrape = async ($: CheerioAPI, url: string) => {
   const id = new URL(url).pathname.split('/')[3];
 };
-
 let scrapeArticle = async (url: string): Promise<Article | null> => {
   // const url = articleUrls[0];
+  let urlClass = new URL(url);
+  let urlWithoutParams = urlClass.origin + urlClass.pathname;
   const { data } = await axios.get(url);
   const $ = load(data);
   let newsType = url.split('/')[3];
-  if (news.includes(newsType))
+  if (news.includes(newsType)) {
     return {
       ...newsScrape($, url),
-      url,
+      url: urlWithoutParams,
     };
+  }
   return null;
 };
 
 let scrape: Scrape = async (queue) => {
-  const { data } = await axios.get('https://www.nrk.no/');
-  let $ = load(data);
-  let sections = $('section.kur-floor');
-  let articleUrls = sections
+  const { data } = await axios.get('https://www.vg.no/');
+  const $ = load(data);
+  let articlesDoms = $('article.article');
+  let articleUrls: string[] = articlesDoms
     .map((i, el) => {
       const url = $(el).find('a').attr('href');
       if (url) return url;
     })
     .get();
-
-  if (queue) {
-    // push all urls to queue
-    for (const queueItem of queue) {
-      articleUrls.push(queueItem.url);
-    }
-  }
-  articleUrls = articleUrls.filter((url) => filter(url));
+  articleUrls = articleUrls.filter(filter);
   let articles: Article[] = [];
-  for (const url of articleUrls) {
-    // TODO: Move this out so you can access it from other places. Possibly add a new function to the scraper type
-    const article = await scrapeArticle(url);
+  for (let url of articleUrls) {
+    let article = await scrapeArticle(url);
     if (article) articles.push(article);
   }
   return articles;

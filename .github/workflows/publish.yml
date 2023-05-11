@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - master
-
+    paths:
+      - extension/manifest.json
 jobs:
   publish:
     name: Publish to Chrome Web Store
+    environment: production
     runs-on: ubuntu-latest
-    if: github.event_path == 'extension/manifest.json' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
       - name: Zip extension

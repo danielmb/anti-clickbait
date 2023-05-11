@@ -1,11 +1,12 @@
 import express from 'express';
-import { get, post } from '../controllers/style.controller';
+import { DELETE, GET, POST } from '../controllers/style.controller';
 import passwordProtect from '../lib/passwordProtect';
 const router = express.Router();
 
-router.get('/', get);
+router.get('/', GET);
 // protection
 router.use(passwordProtect);
-router.post('/', post);
+router.post('/', POST);
+router.delete('/', DELETE);
 
 export default router;

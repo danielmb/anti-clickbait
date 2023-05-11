@@ -1,7 +1,11 @@
-const main = async () => {
-  const fetchJs = chrome.runtime.getURL('scripts/lib/fetch.js');
-  const { hentTittel } = await import(fetchJs);
+// wait for the page to load
+// get current url
+let url = window.location.href;
+// if website is www.an.no
+let main = async () => {
+  const fetch = chrome.runtime.getURL('scripts/lib/fetch.js');
   const storageJs = chrome.runtime.getURL('scripts/lib/storage.js');
+  const { hentTittel } = await import(fetch);
   const { getStorage, setStorage } = await import(storageJs);
   let enabled = await getStorage('enabled').catch((err) => {
     setStorage('enabled', true);
@@ -12,30 +16,27 @@ const main = async () => {
     enabled = true;
   }
   if (!enabled) return;
-  const articles = document.querySelectorAll('.kur-room');
+  const articles = document.querySelectorAll('article.article');
   if (!articles.length) return setTimeout(main, 1000);
   for (let i = 0, max = articles.length; i < max; i++) {
-    const article = articles[i];
-    const header = article.querySelector('.kur-room__title > span');
-    const a = article.querySelector('a');
-
+    let article = articles[i];
+    let header = article.querySelector('h2.headline');
+    let a = article.querySelector('a');
     if (!header) continue;
     if (!a) continue;
-    const l = a.href;
+    let link = new URL(a.href);
+    let l = link.origin + link.pathname;
     /**
      * @type {import('../../../server/src/controllers/title.controller').titleGetResponse["article"]}
-     * */
-    const data = await hentTittel(l);
+     */
+    let data = await hentTittel(l);
     if (data) {
-      header.innerHTML = `<span role="text" title="${data.title}">${data.aiGeneratedTitle}</span>`;
+      header.innerHTML = `<span itemprop="headline" title="${data.title}">${data.aiGeneratedTitle}</span>`;
     }
   }
 };
-
-window.dispatchEvent(new CustomEvent('reloadTitles'));
 
 main();
 window.addEventListener('reloadTitles', async () => {
   main();
 });
-// on message from background.js

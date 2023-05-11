@@ -1,14 +1,16 @@
 name: Deploy website
 on:
   workflow_dispatch:
-  push: 
-    branches: 
+  push:
+    paths:
+      - server/**/*
+      - .github/workflows/server.yml
+    branches:
       - master
       - testing
 jobs:
   build:
     runs-on: self-hosted
-    if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'server')
     strategy:
       matrix:
         node-version: [19.x]
@@ -34,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: server
-          path: ./server/dist      
+          path: ./server/dist
   testing:
     runs-on: self-hosted
     needs: build
@@ -42,13 +44,13 @@ jobs:
       matrix:
         node-version: [19.x]
     environment: testing
-    env: 
+    env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       PRIVATE_KEY_PATH: ${{ secrets.PRIVATE_KEY_PATH }}
       CERTIFICATE_PATH: ${{ secrets.CERTIFICATE_PATH }}
       PASSWORD: ${{ secrets.PASSWORD }}
       DEPLOYMENT_PATH: /home/anticlickbait/testing
-    steps: 
+    steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3

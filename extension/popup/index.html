@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
@@ -15,7 +16,9 @@
       display: block;
       background-image: url(res/layered-waves-haikei.svg);
       background-repeat: no-repeat;
-      background-size:auto;
+      background-position: bottom;
+      background-size: cover;
+      background-color: rgb(77, 16, 146);
     }
 
     input {
@@ -26,11 +29,11 @@
     .form-group {
       width: 100%;
       height: 100%;
-      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 10px;
+      flex: 1;
     }
 
     .form-group label {
@@ -48,7 +51,9 @@
       height: 30px;
       margin-bottom: 10px;
     }
-
+    .text-small{
+      font-size: 0.5em;
+    }
     .container {
       width: 100%;
       height: 100%;
@@ -56,6 +61,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      margin-top: 15px;
+      margin-bottom: 15px;
     }
 
     .reloadbutton {
@@ -63,45 +70,139 @@
       width: 70vw;
     }
 
-    .btn-primary{
+    .btn-primary {
       color: rgb(77, 16, 146)
     }
 
     .applybutton {
-      background-color:rgb(77, 16, 146);
-      color: whitesmoke; 
+      background-color: rgb(77, 16, 146);
+      color: whitesmoke;
       font-size: 7vw;
       font-weight: 500;
-      
+
     }
 
     .reloadicon {
       width: 8vw;
       transition: transform 0.5s ease-in-out;
     }
-    .reloadbutton:hover .reloadicon{
-    -o-transform:rotate(720deg);
-    -ms-transform:rotate(720deg);
-    -moz-transform:rotate(720deg);
-    -webkit-transform:rotate(720deg);
-    transform:rotate(720deg); /* How many times it'll rotate = degrees÷360 */
+
+    .reloadbutton:hover .reloadicon {
+      -o-transform: rotate(720deg);
+      -ms-transform: rotate(720deg);
+      -moz-transform: rotate(720deg);
+      -webkit-transform: rotate(720deg);
+      transform: rotate(720deg);
+      /* How many times it'll rotate = degrees÷360 */
     }
+  
+    .advancedbutton {
+      background-color: rgb(77, 16, 146);
+      color: whitesmoke;
+      font-size: 4vw;
+      font-weight: 500;
+    }
+    .advancedbutton.active{
+      background-color: rgb(77, 16, 146);
+      color: whitesmoke;
+      font-size: 7vw;
+      font-weight: 500;
+    }
+
     .text {
       color: wheat;
       font-weight: bold;
       text-shadow:
-   -1px -1px 0 #000,  
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-     1px 1px 0 #000;
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
     }
+    .hidden{
+      display: none;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 88vw;
+      height: 15vw;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      cursor: pointer;
+      background-color: #f44336;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    .switch label:before {
+      position: absolute;
+      content: "";
+      height: 100%;
+      width: 50%;
+      background-color: #202020;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .switch input:checked+label {
+      background-color: #4CAF50;
+      
+    }
+
+    .switch input:focus+label {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    .switch input:checked+label:before {
+      transform: translateX(100%);
+      -webkit-transform: translateX(100%);
+      -ms-transform: translateX(100%);  
+    }
+
+    .advanced {
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      flex: 1;
+    }
+    .status {
+      color: #00ff00;
+    }
+    .active-tab{
+      background-color: rgb(77, 16, 146);
+      color: whitesmoke;
+      font-size: 4vw;
+      font-weight: 500;
+    }
+
   </style>
 </head>
+
 <body>
   <div class="container">
-    <br>
+    <span class="status"></span>
     <div class="form-group">
-      <button class="btn reloadbutton btn-outline-primary" id="reload"><img class="reloadicon" src="res/reload.svg"></button>
+      <!-- <button class="btn reloadbutton btn-outline-primary" id="reload"><img class="reloadicon"
+          src="res/reload.svg"></button> -->
+      <div class="switch">
+        <input type="checkbox" id="toggleenable" class="toggleenable" checked>
+        <label for="toggleenable"></label>
+      </div>
     </div>
     <div class="form-group">
       <label for="style" class="h4 text">Style</label>
@@ -109,16 +210,26 @@
 
     </div>
     <div class="form-group">
-      <label for="prompt" class="h3 text">Prompt</label>
-      <textarea name="prompt" id="prompt" class="form-control" cols="30" rows="7"></textarea>
-      </div>
-    <div class="form-group">
-      <label for="url"><p class="h4 text">Server-URL</p></label>
-      <input type="text" id="url" class="form-control" placeholder="URL">
+      <label for="prompt" class="h3 text">Prompt <span class="text-small">(read-only)</span></label>
+      <textarea name="prompt" id="prompt" class="form-control" cols="30" rows="7" readonly></textarea>
     </div>
-    <div id="error"></div>
-    <button class="btn applybutton btn-outline-primary" id="apply">Save!</button>
-    <br>
+    <button class="btn bbtn-outline-primary advancedbutton btn-outline-primary reloadbutton" id="advanced-settings-button">Advanced Settings</button>
+    <div class="advanced hidden" id="advanced-settings">
+      <div class="form-group">
+        <label for="url">
+          <p class="h4 text">Server-URL</p>
+        </label>
+        <input type="text" id="url" class="form-control" placeholder="URL">
+      </div>
+      <div id="error"></div>
+      <div id="tabs">
+        <p>
+        <h4 class="text">Tabs</h4>
+        </p>
+        <div id="active-tabs"></div>
+      </div>
+    </div>
+    <!-- <button class="btn applybutton btn-outline-primary" id="apply">Save!</button> -->
   </div>
 </body>
 <script src="popup.js"></script>
