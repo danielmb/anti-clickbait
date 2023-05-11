@@ -6,11 +6,14 @@ const Prisma = new PrismaClient();
 export type GetStylesResponse = {
   styles: AiStyles[];
 };
-
+export const getStylesSchema = z.object({
+  showInactive: z.boolean().optional(),
+});
 export async function GET(req: Request, res: Response, next: NextFunction) {
   try {
+    const { showInactive } = getStylesSchema.parse(req.query);
     let styles = await Prisma.aiStyles.findMany({
-      where: { active: true },
+      where: { active: showInactive ? undefined : true },
     });
     if (styles.length === 0) {
       console.log('No styles found');
