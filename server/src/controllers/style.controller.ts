@@ -7,7 +7,14 @@ export type GetStylesResponse = {
   styles: AiStyles[];
 };
 export const getStylesSchema = z.object({
-  showInactive: z.boolean().optional(),
+  showInactive: z
+    .preprocess((val) => {
+      if (typeof val === 'string') {
+        return val.toLowerCase() === 'true';
+      }
+      return val;
+    }, z.boolean().optional())
+    .optional(),
 });
 export async function GET(req: Request, res: Response, next: NextFunction) {
   try {
