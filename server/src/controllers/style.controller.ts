@@ -7,7 +7,7 @@ export type GetStylesResponse = {
   styles: AiStyles[];
 };
 
-export async function get(req: Request, res: Response, next: NextFunction) {
+export async function GET(req: Request, res: Response, next: NextFunction) {
   try {
     let styles = await Prisma.aiStyles.findMany({
       where: { active: true },
@@ -32,7 +32,7 @@ export const postStylesSchema = z.object({
   prompt: z.string(),
 });
 
-export async function post(req: Request, res: Response, next: NextFunction) {
+export async function POST(req: Request, res: Response, next: NextFunction) {
   try {
     const { styleName, prompt } = postStylesSchema.parse(req.body);
     // example of how to create a style
@@ -72,6 +72,40 @@ export async function post(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export const deleteStylesSchema = z.object({
+  styleName: z.string(),
+});
+export async function DELETE(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { styleName } = deleteStylesSchema.parse(req.body);
+    let styles = await Prisma.aiStyles.findFirst({
+      where: { styleName: styleName },
+    });
+    if (!styles) {
+      return res.status(404).json({
+        message: 'Style not found',
+        code: 'not_found',
+      });
+    }
+
+    styles = await Prisma.aiStyles.update({
+      where: {
+        id: styles.id,
+      },
+      data: {
+        active: false,
+      },
+    });
+
+    return res.status(200).json({
+      styles: styles,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export default {
-  get,
+  GET,
+  POST,
 };
