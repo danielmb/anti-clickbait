@@ -11,9 +11,6 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate:deploy": "prisma migrate deploy"
   },
-  "prisma": {
-    "schema": "../prisma/schema.prisma"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
