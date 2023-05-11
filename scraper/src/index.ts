@@ -76,7 +76,7 @@ Your should only reply with the new title. Do not inclue any comments or other t
         if (rest.content.length > 10000) continue;
         if (rest.underTitle && rest.underTitle?.length > 5000) continue;
         // make sure we dont have any duplicates
-        const newTitle = await titleGenerator(
+        const { newTitle, price } = await titleGenerator(
           // title,
           // rest.content,
           // config.language,
@@ -95,6 +95,7 @@ Your should only reply with the new title. Do not inclue any comments or other t
             data: {
               title: rest.title,
               aiGeneratedTitle: newTitle,
+              tokensUsed: foundArticle.tokensUsed + price,
             },
           });
         } else {
@@ -109,6 +110,7 @@ Your should only reply with the new title. Do not inclue any comments or other t
                   id: style.id,
                 },
               },
+              tokensUsed: price,
             },
           });
         }
