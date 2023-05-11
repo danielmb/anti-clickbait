@@ -18,7 +18,7 @@ model Article {
   aiGeneratedTitle String
   url              String
   styleId          Int
-  tokensUsed       Int      @default(0)
+  tokensUsed       Float    @default(0)
   style            AiStyles @relation(fields: [styleId], references: [id])
 }
 
