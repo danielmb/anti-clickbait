@@ -1,5 +1,6 @@
 import openai from './openai';
 import config from '../config/openai.config';
+import { GetCost } from './token';
 interface TitleGeneratorProps {
   articleTitle: string;
   articleUnderTitle?: string;
@@ -54,7 +55,6 @@ export const titleGenerator = async ({
     content: convertedPrompt,
     role: 'system',
   });
-
   let prompt = `Article title: ${articleTitle}\n`;
   if (articleUnderTitle)
     prompt += `Article under title: ${articleUnderTitle}\n`;
@@ -63,9 +63,20 @@ export const titleGenerator = async ({
     content: prompt,
     role: 'user',
   });
+  let price = chat.messages.reduce((acc, curr) => {
+    return acc + GetCost(curr.content);
+  }, 0);
   console.log(chat.messages);
+  console.log(price);
   let generatedMessage = await chat.createChatCompletion();
-  if (!generatedMessage.data.choices[0].message) return articleTitle;
+  if (!generatedMessage.data.choices[0].message)
+    return {
+      newTitle: articleTitle,
+      price,
+    };
   console.log(generatedMessage.data.choices[0].message.content);
-  return generatedMessage.data.choices[0].message?.content;
+  return {
+    newTitle: generatedMessage.data.choices[0].message?.content,
+    price,
+  };
 };
