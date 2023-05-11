@@ -26,6 +26,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Copy prisma folder to server from ./prisma to ./server/prisma
+        run: |
+          mkdir -p ./server
+          cp -r ./prisma ./server/prisma
       - name: npm install, build
         run: |
           cd ./server
