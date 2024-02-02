@@ -15,6 +15,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Zip extension
         run: zip -r extension.zip extension
+      - uses: actions/upload-artifact@v3
+        with:
+          name: extension
+          path: extension.zip
       - name: Publish to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v4.0.1
         with:
@@ -23,7 +27,3 @@ jobs:
           client-secret: ${{ secrets.EXTENSION_CLIENT_SECRET }}
           refresh-token: ${{ secrets.EXTENSION_REFRESH_TOKEN }}
           file-path: extension.zip
-      - uses: actions/upload-artifact@v2
-        with:
-          name: extension
-          path: extension.zip
