@@ -5,7 +5,6 @@ import https from 'https';
 import cors from 'cors';
 import titleRouter from './routes/title.route';
 import styleRouter from './routes/style.route';
-import receiptRouter from './routes/receipt.route';
 import { errorHandler } from './lib/error';
 import { privateKey, certificate } from './config/ssl';
 const app = express();
@@ -17,7 +16,7 @@ app.use(
 app.use(express.json());
 app.use('/title', titleRouter);
 app.use('/style', styleRouter);
-app.use('/receipt', receiptRouter);
+
 app.use(errorHandler);
 
 const httpsServer = https
