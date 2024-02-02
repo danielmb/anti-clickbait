@@ -124,7 +124,7 @@ jobs:
       #   run: |
       #     echo "DATABASE_URL=$DATABASE_URL" > $DEPLOYMENT_PATH/.env
       #     echo "PRIVATE_KEY_PATH=$PRIVATE_KEY_PATH" >> $DEPLOYMENT_PATH/.env
-      #     echo "CERTIFICATE_PATH=$CERTIFICATE_PATH" >> $DEPLOYMENT_PATH/.env
+      #     echo "CERTIFICATE_PATH=$CERTIFICATE_PATH" >> $D EPLOYMENT_PATH/.env
       #     echo "PASSWORD=$PASSWORD" >> $DEPLOYMENT_PATH/.env
 
       - name: npm install, build

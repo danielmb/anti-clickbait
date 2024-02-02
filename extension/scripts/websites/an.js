@@ -54,7 +54,6 @@ let main = async () => {
   }
 };
 
-main();
 // setInterval(main, 5000);
 const mainLoop = async () => {
   await main().catch((err) => {
@@ -62,6 +61,7 @@ const mainLoop = async () => {
   });
   setTimeout(mainLoop, 5000);
 };
+mainLoop();
 window.addEventListener('reloadTitles', async () => {
   main();
 });
