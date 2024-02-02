@@ -65,6 +65,10 @@ jobs:
         with:
           name: server
           path: ./server/dist
+      - name: Copy prisma folder to server from ./prisma to ./server/prisma
+        run: |
+          mkdir -p ./server
+          cp -r ./prisma ./server/prisma
       - name: Move server
         run: |
           cd ./server
@@ -107,6 +111,10 @@ jobs:
         with:
           name: server
           path: ./server/dist
+      - name: Copy prisma folder to server from ./prisma to ./server/prisma
+        run: |
+          mkdir -p ./server
+          cp -r ./prisma ./server/prisma
       - name: Move server
         run: |
           cd ./server

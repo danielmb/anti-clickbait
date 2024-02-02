@@ -12,14 +12,15 @@ datasource db {
 
 // Scraped article from the web
 model Article {
-  id               Int      @id @default(autoincrement())
+  id               Int        @id @default(autoincrement())
   website          String
   title            String
   aiGeneratedTitle String
   url              String
   styleId          Int
-  tokensUsed       Float    @default(0)
-  style            AiStyles @relation(fields: [styleId], references: [id])
+  tokensUsed       Float      @default(0)
+  style            AiStyles   @relation(fields: [styleId], references: [id])
+  Receipts         Receipts[]
 }
 
 model ScraperQueue {
@@ -41,4 +42,13 @@ model AiStyles {
   updatedAt    DateTime       @updatedAt
   Article      Article[]
   ScraperQueue ScraperQueue[]
+}
+
+model Receipts {
+  id        Int      @id @default(autoincrement())
+  amount    Float    @default(0)
+  articleId Int
+  article   Article  @relation(fields: [articleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
