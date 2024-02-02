@@ -20,6 +20,8 @@ app.use('/style', styleRouter);
 
 app.use(errorHandler);
 
+const port = process.env.PORT || process.env.port || 3000;
+
 const httpsServer = https
   .createServer(
     {
@@ -28,8 +30,10 @@ const httpsServer = https
     },
     app,
   )
-  .listen(process.env.PORT || 3000, () => {
+  // .listen(process.env.PORT || 3000, () => {
+  .listen(port, () => {
     console.log(process.env);
-    console.log(`Server listening on port ${process.env.PORT || 3000}`);
+    // console.log(`Server listening on port ${process.env.PORT || 3000}`);
+    console.log(`Server listening on port ${port}`);
   });
 //
