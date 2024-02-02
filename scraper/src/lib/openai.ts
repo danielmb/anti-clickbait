@@ -20,7 +20,7 @@ export class Chat {
     addAdditionalMessageToMessages?: boolean,
   ) {
     let generatedMessage = await this.openai.createChatCompletion({
-      model: this.model,
+      model: this.model ?? 'gpt-3.5-turbo',
       messages: this.messages.concat(additonalMessages || []),
     });
     if (!dontAddMessageToMessages) {

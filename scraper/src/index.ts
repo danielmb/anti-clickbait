@@ -86,6 +86,9 @@ Your should only reply with the new title. Do not inclue any comments or other t
             language: config.language,
             articleUnderTitle: rest.underTitle,
             promptTemplate: style.prompt,
+            chatSettings: {
+              model: style.model ?? undefined,
+            },
           },
         );
         let createdArticle: Article;

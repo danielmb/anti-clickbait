@@ -36,6 +36,13 @@ let cachedStyle = null;
 
 // };
 let statusDiv = document.getElementById('status');
+const renderLabel = () => {
+  document.getElementById('switch-label').innerHTML = document.getElementById(
+    'toggleenable',
+  ).checked
+    ? 'Enabled'
+    : 'Disabled';
+};
 const refreshTabs = () => {
   for (const tabId in tabs) {
     chrome.tabs.sendMessage(Number(tabId), { type: 'reload' });
@@ -68,6 +75,7 @@ document.getElementById('toggleenable').addEventListener('click', async () => {
     document.getElementById('toggleenable').checked,
   );
 
+  renderLabel();
   // refreshTabs();
 });
 
@@ -79,6 +87,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('style').value = style;
   document.getElementById('url').value = url;
   document.getElementById('toggleenable').checked = checked;
+
+  renderLabel();
 });
 
 // get styles from server

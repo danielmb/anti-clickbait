@@ -1,4 +1,4 @@
-import openai from './openai';
+import openai, { ChatParams } from './openai';
 import config from '../config/openai.config';
 import { GetCost } from './token';
 interface TitleGeneratorProps {
@@ -7,6 +7,7 @@ interface TitleGeneratorProps {
   articleContent: string;
   language: string;
   promptTemplate: string;
+  chatSettings?: Partial<ChatParams>;
 }
 /**
  *
@@ -39,6 +40,7 @@ export const titleGenerator = async ({
   articleContent,
   language,
   promptTemplate,
+  chatSettings,
 }: TitleGeneratorProps) => {
   let convertedPrompt = await templateConverter(promptTemplate, {
     articleTitle,
@@ -50,6 +52,7 @@ export const titleGenerator = async ({
   });
   let chat = new openai.Chat({
     apiKey: config.OPENAI_API_KEY,
+    ...chatSettings,
   });
   chat.addMessage({
     content: convertedPrompt,

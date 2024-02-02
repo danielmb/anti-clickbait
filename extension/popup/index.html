@@ -190,6 +190,10 @@
       font-weight: 500;
     }
 
+    .switch-label {
+      display: flex;
+      justify-content: space-between;
+    }
   </style>
 </head>
 
@@ -199,7 +203,12 @@
     <div class="form-group">
       <!-- <button class="btn reloadbutton btn-outline-primary" id="reload"><img class="reloadicon"
           src="res/reload.svg"></button> -->
-      <div class="switch">
+     
+      <div class="switch-label">
+        <label for="toggleenable" class="h4 text">Anti Clickbait</label>
+        <label id="switch-label"for="toggleenable" class="h4 text"></label>
+      </div>
+      <div class="switch" title="Skru av og på Anti Clickbait">
         <input type="checkbox" id="toggleenable" class="toggleenable" checked>
         <label for="toggleenable"></label>
       </div>

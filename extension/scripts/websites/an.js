@@ -14,13 +14,27 @@ let main = async () => {
     setStorage('enabled', true);
     enabled = true;
   }
+  const style = await getStorage('style').catch((err) => {
+    '_';
+  });
   if (!enabled) return;
   const { hentTittel } = await import(fetch);
   if (url.match(/an\.no/)) {
-    const articles = document.querySelectorAll('article.teaser_container');
-    if (!articles.length) return setTimeout(main, 1000);
+    // select all that has no attribute anti-clickbait-processed
+    const articles = document.querySelectorAll(
+      // 'article.teaser_container[anti-clickbait-processed!="
+      // `article[anti-clickbait-processed!="${style}"]`,
+      `article.teaser_container:not([anti-clickbait-processed="${style}"])`,
+    );
+    // if (!articles.length) return setTimeout(main, 1000);
     for (let i = 0, max = articles.length; i < max; i++) {
       let article = articles[i];
+      if (
+        article.getAttribute('anti-clickbait-processed') === style ||
+        article.getAttribute('anti-clickbait-proccessing') === style
+      )
+        continue;
+      article.setAttribute('anti-clickbait-proccessing', style);
       let header = article.querySelector('span[itemprop="headline"]');
       let a = article.querySelector('a');
       if (!header) continue;
@@ -33,11 +47,21 @@ let main = async () => {
       if (data) {
         header.innerHTML = `<span itemprop="headline" title="${data.title}">${data.aiGeneratedTitle}</span>`;
       }
+      article.removeAttribute('anti-clickbait-proccessing');
+      article.setAttribute('anti-clickbait-processed', style);
+      // article.setAttribute('anti-clickbait-style',
     }
   }
 };
 
 main();
+// setInterval(main, 5000);
+const mainLoop = async () => {
+  await main().catch((err) => {
+    console.error(err);
+  });
+  setTimeout(mainLoop, 5000);
+};
 window.addEventListener('reloadTitles', async () => {
   main();
 });
