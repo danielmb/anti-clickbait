@@ -1,12 +1,13 @@
 import express from 'express';
 import { z } from 'zod';
 import fs from 'fs';
-import https from 'https';
+// import https from 'https';
+import http from 'http';
 import cors from 'cors';
 import titleRouter from './routes/title.route';
 import styleRouter from './routes/style.route';
 import { errorHandler } from './lib/error';
-import { privateKey, certificate } from './config/ssl';
+// import { privateKey, certificate } from './config/ssl';
 const app = express();
 app.use(
   cors({
@@ -19,12 +20,12 @@ app.use('/style', styleRouter);
 
 app.use(errorHandler);
 
-const httpsServer = https
+const httpsServer = http
   .createServer(
-    {
-      key: privateKey,
-      cert: certificate,
-    },
+    // {
+    //   key: privateKey,
+    //   cert: certificate,
+    // },
     app,
   )
   .listen(process.env.PORT || 3000, () => {
