@@ -120,12 +120,12 @@ jobs:
           cd ./server
           mkdir -p $DEPLOYMENT_PATH
           rsync -av --progress --exclude='node_modules' ./ $DEPLOYMENT_PATH
-      - name: Just write all the secrets to a file I dont care anymore
-        run: |
-          echo "DATABASE_URL=$DATABASE_URL" > $DEPLOYMENT_PATH/.env
-          echo "PRIVATE_KEY_PATH=$PRIVATE_KEY_PATH" >> $DEPLOYMENT_PATH/.env
-          echo "CERTIFICATE_PATH=$CERTIFICATE_PATH" >> $DEPLOYMENT_PATH/.env
-          echo "PASSWORD=$PASSWORD" >> $DEPLOYMENT_PATH/.env
+      # - name: Just write all the secrets to a file I dont care anymore
+      #   run: |
+      #     echo "DATABASE_URL=$DATABASE_URL" > $DEPLOYMENT_PATH/.env
+      #     echo "PRIVATE_KEY_PATH=$PRIVATE_KEY_PATH" >> $DEPLOYMENT_PATH/.env
+      #     echo "CERTIFICATE_PATH=$CERTIFICATE_PATH" >> $DEPLOYMENT_PATH/.env
+      #     echo "PASSWORD=$PASSWORD" >> $DEPLOYMENT_PATH/.env
 
       - name: npm install, build
         run: |
