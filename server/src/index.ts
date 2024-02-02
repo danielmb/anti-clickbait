@@ -29,6 +29,7 @@ const httpsServer = https
     app,
   )
   .listen(process.env.PORT || 3000, () => {
+    console.log(process.env);
     console.log(`Server listening on port ${process.env.PORT || 3000}`);
   });
 //

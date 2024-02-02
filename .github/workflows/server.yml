@@ -138,4 +138,4 @@ jobs:
           cd $DEPLOYMENT_PATH
           pm2 startOrRestart ecosystem.config.js --update-env
         env:
-          port: 30000
+          PORT: 30000
