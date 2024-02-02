@@ -126,10 +126,14 @@ jobs:
           npm install
           npx prisma generate
           npm run build
-      - name: pm2 restart if exists else start
-        env:
-          PORT: 30000
-          # set database url
+      # - name: pm2 restart if exists else start
+      #   env:
+      #     PORT: 30000
+      #     # set database url
+      #   run: |
+      #     cd $DEPLOYMENT_PATH
+      #     # pm2 restart anticlickbait --update-env || pm2 start npm --name anticlickbait -- start -- --port $PORT --DATABASE_URL $DATABASE_URL  --PRIVATE_KEY_PATH $PRIVATE_KEY_PATH --CERTIFICATE_PATH $CERTIFICATE_PATH
+      - name: PM2 startOrRestart
         run: |
           cd $DEPLOYMENT_PATH
-          pm2 restart anticlickbait --update-env || pm2 start npm --name anticlickbait -- start -- --port $PORT --DATABASE_URL $DATABASE_URL  --PRIVATE_KEY_PATH $PRIVATE_KEY_PATH --CERTIFICATE_PATH $CERTIFICATE_PATH
+          pm2 startOrRestart ecosystem.config.js --update-env
