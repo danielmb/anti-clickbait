@@ -1,0 +1,33 @@
+{
+  "name": "anti-clickbait",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "dotenv -- turbo build",
+    "dev": "dotenv -- turbo dev",
+    "start": "dotenv -- turbo start",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prisma:generate": "turbo prisma:generate",
+    "prisma:migrate:prod": "dotenv -- turbo prisma:migrate:prod",
+    "dev:cron-job": "dotenv -- turbo dev:cron-job"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv-cli": "^7.3.0",
+    "turbo": "^1.12.2"
+  },
+  "packageManager": "npm@10.2.4",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
+  "dependencies": {
+    "prettier": "^3.2.5"
+  }
+}

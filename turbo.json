@@ -1,0 +1,34 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "prisma:generate": {
+      "dependsOn": ["^prisma:generate"],
+      "cache": false
+    },
+    "prisma:migrate:prod": {
+      "cache": false,
+      "dotEnv": [".env"]
+    },
+
+    "build": {
+      "dependsOn": ["^build", "prisma:generate"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "start": {
+      "dependsOn": ["^start", "build"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:cron-job": {
+      "cache": false,
+      "persistent": true
+    }
+  },
+
+  "globalDotEnv": [".env"]
+}
